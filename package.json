@@ -9,6 +9,9 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "validate": "npm run type-check && npm run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -24,14 +27,19 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.4",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "eslint-config-prettier": "^10.1.8",
+    "msw": "^2.11.3",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }
