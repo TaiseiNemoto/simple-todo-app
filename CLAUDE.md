@@ -29,6 +29,33 @@ npm start
 
 # Lint実行
 npm run lint
+
+# コードフォーマット
+npm run format
+
+# フォーマットチェック
+npm run format:check
+
+# 型チェック
+npm run type-check
+
+# テスト実行
+npm run test
+
+# テストUI起動
+npm run test:ui
+
+# カバレッジ付きテスト
+npm run test:coverage
+
+# Prisma Studio起動（データベースGUI）
+npx prisma studio
+
+# Prismaクライアント生成
+npx prisma generate
+
+# マイグレーション実行
+npx prisma migrate dev
 ```
 
 ## アーキテクチャ
