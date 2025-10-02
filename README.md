@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Simple TODO App
 
-## Getting Started
+GitHub OAuth認証を使用したシンプルなTODOアプリケーション。技術検証を目的とし、ローカル環境で動作します。
 
-First, run the development server:
+## 技術スタック
+
+- **フレームワーク**: Next.js 15（App Router）
+- **UI**: Tailwind CSS v4
+- **認証**: Auth.js（GitHub OAuth）
+- **データベース**: MySQL（Prisma経由）
+- **テスト**: Vitest、React Testing Library、MSW
+- **開発環境**: Docker（予定）
+
+## セットアップ手順
+
+### 1. リポジトリのクローン
+
+```bash
+git clone <repository-url>
+cd simple-todo-app
+```
+
+### 2. 依存パッケージのインストール
+
+```bash
+npm install
+```
+
+### 3. 環境変数の設定
+
+`.env.example`をコピーして`.env.local`を作成し、必要な値を設定します。
+
+```bash
+cp .env.example .env.local
+```
+
+#### 環境変数の説明
+
+| 変数名               | 説明                             | 例                                             |
+| -------------------- | -------------------------------- | ---------------------------------------------- |
+| `DATABASE_URL`       | MySQL接続URL                     | `mysql://user:password@localhost:3306/todo_db` |
+| `AUTH_SECRET`        | Auth.jsのセッション暗号化キー    | `openssl rand -base64 32`で生成                |
+| `AUTH_GITHUB_ID`     | GitHub OAuth App のClient ID     | GitHubで取得                                   |
+| `AUTH_GITHUB_SECRET` | GitHub OAuth App のClient Secret | GitHubで取得                                   |
+
+#### AUTH_SECRETの生成
+
+```bash
+openssl rand -base64 32
+```
+
+#### GitHub OAuth Appの設定
+
+1. [GitHub Developer Settings](https://github.com/settings/developers)にアクセス
+2. "New OAuth App"をクリック
+3. 以下の情報を入力:
+   - **Application name**: Simple TODO App (Local)
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
+4. Client IDとClient Secretを`.env.local`に設定
+
+### 4. データベースのセットアップ
+
+MySQLサーバーを起動し、Prismaでマイグレーションを実行します。
+
+```bash
+# Prismaクライアントの生成
+npx prisma generate
+
+# マイグレーションの実行
+npx prisma migrate dev
+```
+
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開きます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 開発コマンド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# 開発サーバー起動（Turbopack使用）
+npm run dev
 
-## Learn More
+# 本番ビルド
+npm run build
 
-To learn more about Next.js, take a look at the following resources:
+# 本番サーバー起動
+npm start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Lint実行
+npm run lint
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# コードフォーマット
+npm run format
 
-## Deploy on Vercel
+# フォーマットチェック
+npm run format:check
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 型チェック
+npm run type-check
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# テスト実行
+npm run test
+
+# テストUI起動
+npm run test:ui
+
+# カバレッジ付きテスト
+npm run test:coverage
+
+# Prisma Studio起動（データベースGUI）
+npx prisma studio
+```
+
+## プロジェクト構成
+
+```
+simple-todo-app/
+├── src/
+│   ├── app/           # Next.js App Router（ページ、レイアウト、APIルート）
+│   └── auth.ts        # Auth.js設定
+├── prisma/
+│   └── schema.prisma  # データベーススキーマ
+├── docs/              # 設計ドキュメント
+│   ├── 要件定義.md
+│   ├── DB設計.md
+│   ├── 認証設計.md
+│   ├── API設計/
+│   └── 画面設計/
+└── tests/             # テストファイル
+```
+
+## ドキュメント
+
+詳細な設計は[docs/](docs/)ディレクトリを参照してください。
+
+- [要件定義.md](docs/要件定義.md)
+- [DB設計.md](docs/DB設計.md)
+- [認証設計.md](docs/認証設計.md)
+- [API設計/](docs/API設計/)
+- [画面設計/](docs/画面設計/)
