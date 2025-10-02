@@ -14,7 +14,8 @@
     "test:coverage": "vitest --coverage",
     "validate": "npm run type-check && npm run lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@prisma/client": "^6.16.3",
@@ -36,10 +37,21 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
     "msw": "^2.11.3",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,css,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
