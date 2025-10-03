@@ -1,18 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-type Priority = "low" | "medium" | "high";
-type Status = "incomplete" | "complete";
-
-interface Todo {
-  id: string;
-  title: string;
-  description: string;
-  dueDate: string | null;
-  priority: Priority;
-  status: Status;
-}
+import type { Todo, Priority, Status } from "@/types/todo";
 
 interface EditTodoModalProps {
   isOpen: boolean;

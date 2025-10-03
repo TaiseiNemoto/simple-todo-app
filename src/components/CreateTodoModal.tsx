@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
-type Priority = "low" | "medium" | "high";
-type Status = "incomplete" | "complete";
+import type { Priority, Status } from "@/types/todo";
 
 interface CreateTodoModalProps {
   isOpen: boolean;
