@@ -7,7 +7,7 @@ interface ErrorProps {
 
 export default function Error({ error, reset }: ErrorProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-6">
       <div className="text-center max-w-md">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
           エラーが発生しました（500）
@@ -20,6 +20,6 @@ export default function Error({ error, reset }: ErrorProps) {
           もう一度試す
         </button>
       </div>
-    </div>
+    </main>
   );
 }
