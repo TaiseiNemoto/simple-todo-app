@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Todo, Priority, Status } from "@/types/todo";
+import Dialog from "@/components/ui/Dialog";
 
 interface EditTodoModalProps {
   isOpen: boolean;
@@ -31,9 +32,8 @@ export default function EditTodoModal({
     setStatus(todo.status);
   }, [todo]);
 
-  if (!isOpen) return null;
-
-  const handleSave = () => {
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
     if (title.trim()) {
       onSave({
         ...todo,
@@ -57,32 +57,8 @@ export default function EditTodoModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900">TODO編集</h2>
-          <button
-            onClick={handleClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="閉じる"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
+    <Dialog isOpen={isOpen} onClose={handleClose} title="TODO編集">
+      <form onSubmit={handleSave}>
         {/* Form */}
         <div className="p-6 space-y-5">
           {/* Title (Required) */}
@@ -101,6 +77,7 @@ export default function EditTodoModal({
               placeholder="TODOのタイトルを入力"
               className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
               autoFocus
+              required
             />
           </div>
 
@@ -188,14 +165,14 @@ export default function EditTodoModal({
             キャンセル
           </button>
           <button
-            onClick={handleSave}
+            type="submit"
             disabled={!title.trim()}
             className="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
           >
             保存
           </button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Dialog>
   );
 }
