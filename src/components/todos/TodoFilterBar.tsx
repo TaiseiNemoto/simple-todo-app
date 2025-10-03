@@ -29,13 +29,13 @@ export default function TodoFilterBar({
         placeholder="検索..."
         value={searchText}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+        className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900"
       />
 
       <select
         value={statusFilter}
         onChange={(e) => onStatusChange(e.target.value as "all" | Status)}
-        className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+        className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900"
       >
         <option value="all">すべて</option>
         <option value="incomplete">未完了</option>
@@ -45,7 +45,7 @@ export default function TodoFilterBar({
       <select
         value={priorityFilter}
         onChange={(e) => onPriorityChange(e.target.value as "all" | Priority)}
-        className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
+        className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900"
       >
         <option value="all">すべて</option>
         <option value="low">低</option>
