@@ -1,76 +1,71 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import type { Todo, Priority, Status } from "@/types/todo";
-import Dialog from "@/components/ui/Dialog";
+import { useState } from "react";
+import type { Priority } from "@/types/todo";
+import Dialog from "@/components/common/Dialog";
 
-interface EditTodoModalProps {
+interface CreateTodoModalProps {
   isOpen: boolean;
-  todo: Todo;
   onClose: () => void;
-  onSave: (todo: Todo) => void;
+  onSave: (todo: {
+    title: string;
+    description: string;
+    dueDate: string;
+    priority: Priority;
+  }) => void;
 }
 
-export default function EditTodoModal({
+export default function CreateTodoModal({
   isOpen,
-  todo,
   onClose,
   onSave,
-}: EditTodoModalProps) {
-  const [title, setTitle] = useState(todo.title);
-  const [description, setDescription] = useState(todo.description);
-  const [dueDate, setDueDate] = useState(todo.dueDate || "");
-  const [priority, setPriority] = useState<Priority>(todo.priority);
-  const [status, setStatus] = useState<Status>(todo.status);
-
-  // Update form when todo changes
-  useEffect(() => {
-    setTitle(todo.title);
-    setDescription(todo.description);
-    setDueDate(todo.dueDate || "");
-    setPriority(todo.priority);
-    setStatus(todo.status);
-  }, [todo]);
+}: CreateTodoModalProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState<Priority>("medium");
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
       onSave({
-        ...todo,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate || null,
+        dueDate: dueDate || "",
         priority,
-        status,
       });
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setDueDate("");
+      setPriority("medium");
     }
   };
 
   const handleClose = () => {
-    // Reset form to original values
-    setTitle(todo.title);
-    setDescription(todo.description);
-    setDueDate(todo.dueDate || "");
-    setPriority(todo.priority);
-    setStatus(todo.status);
+    // Reset form
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setPriority("medium");
     onClose();
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={handleClose} title="TODO編集">
+    <Dialog isOpen={isOpen} onClose={handleClose} title="新規TODO作成">
       <form onSubmit={handleSave}>
         {/* Form */}
         <div className="p-6 space-y-5">
           {/* Title (Required) */}
           <div>
             <label
-              htmlFor="edit-title"
+              htmlFor="title"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               タイトル <span className="text-red-500">*</span>
             </label>
             <input
-              id="edit-title"
+              id="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -84,13 +79,13 @@ export default function EditTodoModal({
           {/* Description (Optional) */}
           <div>
             <label
-              htmlFor="edit-description"
+              htmlFor="description"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               説明
             </label>
             <textarea
-              id="edit-description"
+              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="詳細な説明を入力（任意）"
@@ -102,13 +97,13 @@ export default function EditTodoModal({
           {/* Due Date (Optional) */}
           <div>
             <label
-              htmlFor="edit-dueDate"
+              htmlFor="dueDate"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               期限
             </label>
             <input
-              id="edit-dueDate"
+              id="dueDate"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -119,13 +114,13 @@ export default function EditTodoModal({
           {/* Priority (Optional) */}
           <div>
             <label
-              htmlFor="edit-priority"
+              htmlFor="priority"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               優先度
             </label>
             <select
-              id="edit-priority"
+              id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value as Priority)}
               className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
@@ -133,25 +128,6 @@ export default function EditTodoModal({
               <option value="low">低</option>
               <option value="medium">中</option>
               <option value="high">高</option>
-            </select>
-          </div>
-
-          {/* Status (Optional) */}
-          <div>
-            <label
-              htmlFor="edit-status"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              ステータス
-            </label>
-            <select
-              id="edit-status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as Status)}
-              className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
-            >
-              <option value="incomplete">未完了</option>
-              <option value="complete">完了</option>
             </select>
           </div>
         </div>
