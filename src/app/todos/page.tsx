@@ -9,7 +9,6 @@ import TodoItem from "@/components/todos/TodoItem";
 import DeleteConfirmDialog from "@/components/todos/DeleteConfirmDialog";
 import type { Todo, Priority, Status } from "@/types/todo";
 
-// Mock data
 const initialTodos: Todo[] = [
   {
     id: "1",
@@ -62,7 +61,6 @@ export default function TodosPage() {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodo, setDeletingTodo] = useState<Todo | null>(null);
 
-  // Filter todos based on search and filters
   const filteredTodos = todos.filter((todo) => {
     const matchesSearch =
       searchText === "" ||
@@ -75,7 +73,6 @@ export default function TodosPage() {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  // Toggle todo completion
   const toggleTodoStatus = (id: string) => {
     setTodos(
       todos.map((todo) =>
@@ -89,12 +86,10 @@ export default function TodosPage() {
     );
   };
 
-  // Handle sign out
   const handleSignOut = () => {
     alert("サインアウトしました");
   };
 
-  // Handle edit
   const handleEditTodo = (updatedTodo: Todo) => {
     setTodos(
       todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
@@ -102,7 +97,6 @@ export default function TodosPage() {
     setEditingTodo(null);
   };
 
-  // Handle delete
   const handleDeleteConfirm = () => {
     if (deletingTodo) {
       setTodos(todos.filter((todo) => todo.id !== deletingTodo.id));
@@ -110,7 +104,6 @@ export default function TodosPage() {
     }
   };
 
-  // Handler for creating new todo
   const handleCreateTodo = (newTodo: {
     title: string;
     description: string;

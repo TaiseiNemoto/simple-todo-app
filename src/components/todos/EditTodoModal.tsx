@@ -23,7 +23,6 @@ export default function EditTodoModal({
   const [priority, setPriority] = useState<Priority>(todo.priority);
   const [status, setStatus] = useState<Status>(todo.status);
 
-  // Update form when todo changes
   useEffect(() => {
     setTitle(todo.title);
     setDescription(todo.description);
@@ -47,7 +46,6 @@ export default function EditTodoModal({
   };
 
   const handleClose = () => {
-    // Reset form to original values
     setTitle(todo.title);
     setDescription(todo.description);
     setDueDate(todo.dueDate || "");
@@ -59,9 +57,7 @@ export default function EditTodoModal({
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title="TODO編集">
       <form onSubmit={handleSave}>
-        {/* Form */}
         <div className="p-6 space-y-5">
-          {/* Title (Required) */}
           <div>
             <label
               htmlFor="edit-title"
@@ -81,7 +77,6 @@ export default function EditTodoModal({
             />
           </div>
 
-          {/* Description (Optional) */}
           <div>
             <label
               htmlFor="edit-description"
@@ -99,7 +94,6 @@ export default function EditTodoModal({
             />
           </div>
 
-          {/* Due Date (Optional) */}
           <div>
             <label
               htmlFor="edit-dueDate"
@@ -116,7 +110,6 @@ export default function EditTodoModal({
             />
           </div>
 
-          {/* Priority (Optional) */}
           <div>
             <label
               htmlFor="edit-priority"
@@ -136,7 +129,6 @@ export default function EditTodoModal({
             </select>
           </div>
 
-          {/* Status (Optional) */}
           <div>
             <label
               htmlFor="edit-status"
@@ -156,7 +148,6 @@ export default function EditTodoModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex gap-3 justify-end p-6 border-t border-gray-100">
           <button
             onClick={handleClose}

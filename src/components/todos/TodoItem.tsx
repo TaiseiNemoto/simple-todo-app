@@ -24,6 +24,10 @@ export default function TodoItem({
   onEdit,
   onDelete,
 }: TodoItemProps) {
+  const formatDate = (dateStr: string) => {
+    return dateStr.replace(/-/g, "/");
+  };
+
   return (
     <div className="bg-white rounded-xl p-5 hover:shadow-md transition-shadow border border-gray-100">
       <div className="flex items-start gap-4">
@@ -61,7 +65,7 @@ export default function TodoItem({
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                {todo.dueDate}
+                {formatDate(todo.dueDate)}
               </span>
             )}
 

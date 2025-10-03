@@ -34,7 +34,6 @@ export default function CreateTodoModal({
         dueDate: dueDate || "",
         priority,
       });
-      // Reset form
       setTitle("");
       setDescription("");
       setDueDate("");
@@ -43,7 +42,6 @@ export default function CreateTodoModal({
   };
 
   const handleClose = () => {
-    // Reset form
     setTitle("");
     setDescription("");
     setDueDate("");
@@ -54,9 +52,7 @@ export default function CreateTodoModal({
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title="新規TODO作成">
       <form onSubmit={handleSave}>
-        {/* Form */}
         <div className="p-6 space-y-5">
-          {/* Title (Required) */}
           <div>
             <label
               htmlFor="title"
@@ -76,7 +72,6 @@ export default function CreateTodoModal({
             />
           </div>
 
-          {/* Description (Optional) */}
           <div>
             <label
               htmlFor="description"
@@ -94,7 +89,6 @@ export default function CreateTodoModal({
             />
           </div>
 
-          {/* Due Date (Optional) */}
           <div>
             <label
               htmlFor="dueDate"
@@ -111,7 +105,6 @@ export default function CreateTodoModal({
             />
           </div>
 
-          {/* Priority (Optional) */}
           <div>
             <label
               htmlFor="priority"
@@ -132,7 +125,6 @@ export default function CreateTodoModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex gap-3 justify-end p-6 border-t border-gray-100">
           <button
             onClick={handleClose}

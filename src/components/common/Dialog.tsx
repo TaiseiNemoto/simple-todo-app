@@ -28,7 +28,6 @@ export default function Dialog({
     }
   }, [isOpen]);
 
-  // backdrop（背景）クリックで閉じる
   const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -50,9 +49,8 @@ export default function Dialog({
       ref={dialogRef}
       onClick={handleBackdropClick}
       onClose={onClose}
-      className="backdrop:bg-black/50 backdrop:backdrop-blur-sm bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-0"
+      className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 m-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-0"
     >
-      {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-100">
         <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
         <button
@@ -76,7 +74,6 @@ export default function Dialog({
         </button>
       </div>
 
-      {/* Content */}
       {children}
     </dialog>
   );
