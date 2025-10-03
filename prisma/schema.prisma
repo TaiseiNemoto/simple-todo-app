@@ -40,7 +40,7 @@ model Todo {
   todoId      String       @id @default(uuid())
   userId      String
   title       String       @db.VarChar(120)
-  description String       @db.Text @default("")
+  description String       @db.Text
   status      TodoStatus   @default(open)
   priority    TodoPriority @default(mid)
   due         DateTime?
@@ -49,5 +49,10 @@ model Todo {
 
   user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
+  @@index([userId, updatedAt])
+  @@index([userId, status])
+  @@index([userId, priority])
+  @@index([userId, due])
+  @@fulltext([title, description])
   @@map("todos")
 }
