@@ -37,20 +37,47 @@
 
 ```json
 {
-  "id": "c5a2b5f8-0a2e-4c0f-9a20-2f9b2a3f6bde",
+  "todoId": "c5a2b5f8-0a2e-4c0f-9a20-2f9b2a3f6bde",
+  "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "title": "月次レポート提出",
   "description": "経営会議向けに集計を反映",
   "status": "open",
   "priority": "high",
-  "due": "2025-10-10T00:00:00Z",
-  "createdAt": "2025-10-01T02:11:45Z",
-  "updatedAt": "2025-10-01T02:11:45Z"
+  "due": "2025-10-10T00:00:00.000Z",
+  "createdAt": "2025-10-01T02:11:45.000Z",
+  "updatedAt": "2025-10-01T02:11:45.000Z"
 }
 ```
 
 ## バリデーション設計
 
-- `title`：トリム後 1–100 文字（空/空白のみはNG）
-- `description`：0–2000 文字
+- `title`：トリム後 1–120 文字（空/空白のみはNG）
+- `description`：0–2000 文字、省略時は空文字
 - `status ∈ {"open","done"}`, `priority ∈ {"low","mid","high"}`
-- `due`：`YYYY-MM-DD` 。
+- `due`：`YYYY-MM-DD` または ISO 8601形式。日付のみの場合はUTC 00:00:00に正規化
+
+## エラーレスポンス例
+
+### 401 未認証
+
+```json
+{
+  "code": "UNAUTHORIZED",
+  "message": "認証が必要です"
+}
+```
+
+### 400 バリデーションエラー
+
+```json
+{
+  "code": "INVALID_BODY",
+  "message": "無効なリクエストボディです",
+  "details": [
+    {
+      "path": ["title"],
+      "message": "タイトルは必須です"
+    }
+  ]
+}
+```

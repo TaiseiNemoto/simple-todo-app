@@ -22,17 +22,47 @@
 
 ```json
 {
-  "id": "c5a2b5f8-0a2e-4c0f-9a20-2f9b2a3f6bde",
+  "todoId": "c5a2b5f8-0a2e-4c0f-9a20-2f9b2a3f6bde",
+  "userId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   "title": "月次レポート提出",
   "description": "経営会議向けに集計を反映",
   "status": "open",
   "priority": "high",
-  "due": "2025-10-10T00:00:00Z",
-  "createdAt": "2025-10-01T02:11:45Z",
-  "updatedAt": "2025-10-01T02:11:45Z"
+  "due": "2025-10-10T00:00:00.000Z",
+  "createdAt": "2025-10-01T02:11:45.000Z",
+  "updatedAt": "2025-10-01T02:11:45.000Z"
 }
 ```
 
 ## バリデーション設計
 
 存在しない → **404**、他人の資源 → **403**
+
+## エラーレスポンス例
+
+### 401 未認証
+
+```json
+{
+  "code": "UNAUTHORIZED",
+  "message": "認証が必要です"
+}
+```
+
+### 404 リソース不存在
+
+```json
+{
+  "code": "NOT_FOUND",
+  "message": "TODOが見つかりません"
+}
+```
+
+### 403 所有者不一致
+
+```json
+{
+  "code": "FORBIDDEN",
+  "message": "このTODOにアクセスする権限がありません"
+}
+```

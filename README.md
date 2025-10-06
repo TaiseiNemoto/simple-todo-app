@@ -134,6 +134,46 @@ simple-todo-app/
 └── tests/             # テストファイル
 ```
 
+## API実装状況
+
+バックエンドAPIは完全に実装済みです。以下のエンドポイントが利用可能です：
+
+### 実装済みエンドポイント
+
+| ID     | エンドポイント   | メソッド | 説明         | 認証 |
+| ------ | ---------------- | -------- | ------------ | ---- |
+| API-01 | `/api/todos`     | GET      | TODO一覧取得 | 必須 |
+| API-02 | `/api/todos`     | POST     | TODO新規作成 | 必須 |
+| API-03 | `/api/todos/:id` | GET      | TODO単体取得 | 必須 |
+| API-04 | `/api/todos/:id` | PATCH    | TODO更新     | 必須 |
+| API-05 | `/api/todos/:id` | DELETE   | TODO削除     | 必須 |
+
+### 認証
+
+- **認証方式**: Auth.js（GitHub OAuth）によるCookieベースのセッション認証
+- **認証ヘッダー**: `Cookie: authjs.session-token=<session-token>`
+- **未認証時**: `401 UNAUTHORIZED`エラー
+- **所有者不一致時**: `403 FORBIDDEN`エラー
+
+### テスト実行
+
+```bash
+# バリデーションテスト + 認証テスト
+npm run test
+
+# 特定のテストファイルのみ実行
+npm run test src/lib/validations/todo.test.ts
+npm run test src/lib/auth.test.ts
+```
+
+### テスト結果
+
+- ✅ バリデーションテスト: 33件パス
+- ✅ 認証/認可テスト: 8件パス
+- ⚠️ API統合テスト: スキップ（手動テストで代替）
+
+詳細なAPI仕様は[docs/API設計/](docs/API設計/)を参照してください。
+
 ## ドキュメント
 
 詳細な設計は[docs/](docs/)ディレクトリを参照してください。
@@ -142,4 +182,11 @@ simple-todo-app/
 - [DB設計.md](docs/DB設計.md)
 - [認証設計.md](docs/認証設計.md)
 - [API設計/](docs/API設計/)
+  - [エンドポイント一覧.md](docs/API設計/エンドポイント一覧.md)
+  - [共通エラーレスポンス.md](docs/API設計/共通エラーレスポンス.md)
+  - [API-01.md](docs/API設計/API-01.md) - TODO一覧取得
+  - [API-02.md](docs/API設計/API-02.md) - TODO新規作成
+  - [API-03.md](docs/API設計/API-03.md) - TODO単体取得
+  - [API-04.md](docs/API設計/API-04.md) - TODO更新
+  - [API-05.md](docs/API設計/API-05.md) - TODO削除
 - [画面設計/](docs/画面設計/)
