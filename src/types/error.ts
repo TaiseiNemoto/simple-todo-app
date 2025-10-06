@@ -2,7 +2,7 @@
  * エラー詳細情報の型
  * バリデーションエラーのフィールド情報などを格納
  */
-export type ErrorDetails = Record<string, string | string[]>;
+export type ErrorDetails = Record<string, unknown>;
 
 /**
  * API エラーレスポンスの型定義

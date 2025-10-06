@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { todoQuerySchema } from "@/lib/validations/todo";
+import { todoQuerySchema, createTodoSchema } from "@/lib/validations/todo";
 import {
   unauthorizedError,
   invalidParameterError,
+  invalidBodyError,
   internalError,
 } from "@/lib/errors";
 import { ZodError } from "zod";
@@ -96,6 +97,54 @@ export async function GET(request: NextRequest) {
 
     // その他のエラー
     console.error("TODO一覧取得エラー:", error);
+    return internalError();
+  }
+}
+
+/**
+ * POST /api/todos
+ * TODO新規作成
+ */
+export async function POST(request: NextRequest) {
+  try {
+    // セッション認証チェック
+    const session = await requireAuth();
+    const userId = session.user.id;
+
+    // リクエストボディ取得
+    const body = await request.json();
+
+    // リクエストボディバリデーション
+    const validatedData = createTodoSchema.parse(body);
+
+    // Prisma create
+    const newTodo = await prisma.todo.create({
+      data: {
+        userId,
+        title: validatedData.title,
+        description: validatedData.description,
+        status: validatedData.status,
+        priority: validatedData.priority,
+        due: validatedData.due,
+      },
+    });
+
+    return NextResponse.json(newTodo, { status: 201 });
+  } catch (error) {
+    // 認証エラー
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return unauthorizedError();
+    }
+
+    // バリデーションエラー
+    if (error instanceof ZodError) {
+      return invalidBodyError("リクエストボディが不正です", {
+        issues: error.issues,
+      });
+    }
+
+    // その他のエラー
+    console.error("TODO作成エラー:", error);
     return internalError();
   }
 }
