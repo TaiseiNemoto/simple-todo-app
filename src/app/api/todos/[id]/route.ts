@@ -117,3 +117,53 @@ export async function PATCH(
     return internalError();
   }
 }
+
+/**
+ * DELETE /api/todos/[id]
+ * TODO削除
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // セッション認証チェック
+    const session = await requireAuth();
+    const userId = session.user.id;
+
+    // Prisma findUnique（存在確認）
+    const todo = await prisma.todo.findUnique({
+      where: {
+        todoId: params.id,
+      },
+    });
+
+    // 存在チェック
+    if (!todo) {
+      return notFoundError("TODOが見つかりません");
+    }
+
+    // 所有者チェック
+    if (todo.userId !== userId) {
+      return forbiddenError("このTODOへのアクセス権限がありません");
+    }
+
+    // Prisma delete
+    await prisma.todo.delete({
+      where: {
+        todoId: params.id,
+      },
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    // 認証エラー
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      return unauthorizedError();
+    }
+
+    // その他のエラー
+    console.error("TODO削除エラー:", error);
+    return internalError();
+  }
+}
