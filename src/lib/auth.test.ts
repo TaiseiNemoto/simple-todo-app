@@ -7,6 +7,12 @@ vi.mock("@/auth", () => ({
   auth: vi.fn(),
 }));
 
+import { auth } from "@/auth";
+
+const mockAuth = vi.mocked(auth) as unknown as ReturnType<
+  typeof vi.fn<() => Promise<Session | null>>
+>;
+
 describe("getServerSession", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -21,23 +27,21 @@ describe("getServerSession", () => {
       expires: new Date(Date.now() + 86400000).toISOString(), // 24時間後
     };
 
-    const { auth } = await import("@/auth");
-    vi.mocked(auth).mockResolvedValue(mockSession);
+    mockAuth.mockResolvedValue(mockSession);
 
     const session = await getServerSession();
 
     expect(session).toEqual(mockSession);
-    expect(auth).toHaveBeenCalledOnce();
+    expect(mockAuth).toHaveBeenCalledOnce();
   });
 
   it("セッションがない場合はnullを返す", async () => {
-    const { auth } = await import("@/auth");
-    vi.mocked(auth).mockResolvedValue(null);
+    mockAuth.mockResolvedValue(null);
 
     const session = await getServerSession();
 
     expect(session).toBeNull();
-    expect(auth).toHaveBeenCalledOnce();
+    expect(mockAuth).toHaveBeenCalledOnce();
   });
 });
 
@@ -56,8 +60,7 @@ describe("requireAuth", () => {
         expires: new Date(Date.now() + 86400000).toISOString(),
       };
 
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockAuth.mockResolvedValue(mockSession);
 
       const session = await requireAuth();
 
@@ -74,8 +77,7 @@ describe("requireAuth", () => {
         expires: new Date(Date.now() + 86400000).toISOString(),
       };
 
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockAuth.mockResolvedValue(mockSession);
 
       const session = await requireAuth();
 
@@ -85,8 +87,7 @@ describe("requireAuth", () => {
 
   describe("異常系", () => {
     it("セッションがnullの場合、UNAUTHORIZEDエラーをスロー", async () => {
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(null);
+      mockAuth.mockResolvedValue(null);
 
       await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
     });
@@ -96,8 +97,7 @@ describe("requireAuth", () => {
         expires: new Date(Date.now() + 86400000).toISOString(),
       } as Session;
 
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
     });
@@ -110,8 +110,7 @@ describe("requireAuth", () => {
         expires: new Date(Date.now() + 86400000).toISOString(),
       };
 
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
     });
@@ -125,8 +124,7 @@ describe("requireAuth", () => {
         expires: new Date(Date.now() + 86400000).toISOString(),
       };
 
-      const { auth } = await import("@/auth");
-      vi.mocked(auth).mockResolvedValue(mockSession);
+      mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
     });
