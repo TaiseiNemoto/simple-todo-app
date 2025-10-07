@@ -5,21 +5,24 @@
 /**
  * 優先度の型定義
  */
-export type Priority = "low" | "medium" | "high";
+export type Priority = "low" | "mid" | "high";
 
 /**
  * ステータスの型定義
  */
-export type Status = "incomplete" | "complete";
+export type Status = "open" | "done";
 
 /**
  * TODOアイテムのインターフェース
  */
 export interface Todo {
-  id: string;
+  todoId: string;
+  userId: string;
   title: string;
   description: string;
-  dueDate: string | null;
-  priority: Priority;
   status: Status;
+  priority: Priority;
+  due: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

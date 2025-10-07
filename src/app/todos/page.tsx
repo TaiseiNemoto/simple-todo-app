@@ -11,44 +11,59 @@ import type { Todo, Priority, Status } from "@/types/todo";
 
 const initialTodos: Todo[] = [
   {
-    id: "1",
+    todoId: "1",
+    userId: "mock-user",
     title: "プロジェクト仕様書を作成",
     description: "新規プロジェクトの仕様書を作成する",
-    dueDate: "2025-10-05",
+    due: new Date("2025-10-05"),
     priority: "high",
-    status: "incomplete",
+    status: "open",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "2",
+    todoId: "2",
+    userId: "mock-user",
     title: "デザインレビュー",
     description: "UIデザインのレビューを実施",
-    dueDate: "2025-10-08",
-    priority: "medium",
-    status: "incomplete",
+    due: new Date("2025-10-08"),
+    priority: "mid",
+    status: "open",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "3",
+    todoId: "3",
+    userId: "mock-user",
     title: "データベース設計",
     description: "データベーススキーマを設計",
-    dueDate: null,
+    due: null,
     priority: "low",
-    status: "complete",
+    status: "done",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "4",
+    todoId: "4",
+    userId: "mock-user",
     title: "API実装",
     description: "RESTful APIを実装する",
-    dueDate: "2025-10-10",
+    due: new Date("2025-10-10"),
     priority: "high",
-    status: "incomplete",
+    status: "open",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "5",
+    todoId: "5",
+    userId: "mock-user",
     title: "テストコード作成",
     description: "ユニットテストを作成",
-    dueDate: "2025-10-12",
-    priority: "medium",
-    status: "complete",
+    due: new Date("2025-10-12"),
+    priority: "mid",
+    status: "done",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
@@ -76,10 +91,10 @@ export default function TodosPage() {
   const toggleTodoStatus = (id: string) => {
     setTodos(
       todos.map((todo) =>
-        todo.id === id
+        todo.todoId === id
           ? {
               ...todo,
-              status: todo.status === "complete" ? "incomplete" : "complete",
+              status: todo.status === "done" ? "open" : "done",
             }
           : todo
       )
@@ -92,14 +107,16 @@ export default function TodosPage() {
 
   const handleEditTodo = (updatedTodo: Todo) => {
     setTodos(
-      todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+      todos.map((todo) =>
+        todo.todoId === updatedTodo.todoId ? updatedTodo : todo
+      )
     );
     setEditingTodo(null);
   };
 
   const handleDeleteConfirm = () => {
     if (deletingTodo) {
-      setTodos(todos.filter((todo) => todo.id !== deletingTodo.id));
+      setTodos(todos.filter((todo) => todo.todoId !== deletingTodo.todoId));
       setDeletingTodo(null);
     }
   };
@@ -107,16 +124,19 @@ export default function TodosPage() {
   const handleCreateTodo = (newTodo: {
     title: string;
     description: string;
-    dueDate: string;
+    due: Date | null;
     priority: Priority;
   }) => {
     const todo: Todo = {
-      id: Date.now().toString(),
+      todoId: Date.now().toString(),
+      userId: "mock-user",
       title: newTodo.title,
       description: newTodo.description,
-      dueDate: newTodo.dueDate || null,
+      due: newTodo.due,
       priority: newTodo.priority,
-      status: "incomplete",
+      status: "open",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     setTodos([todo, ...todos]);
     setShowCreateModal(false);
@@ -145,7 +165,7 @@ export default function TodosPage() {
           ) : (
             filteredTodos.map((todo) => (
               <TodoItem
-                key={todo.id}
+                key={todo.todoId}
                 todo={todo}
                 onToggleStatus={toggleTodoStatus}
                 onEdit={setEditingTodo}

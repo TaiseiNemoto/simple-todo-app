@@ -9,13 +9,13 @@ interface TodoItemProps {
 
 const priorityLabels: Record<Priority, string> = {
   low: "低",
-  medium: "中",
+  mid: "中",
   high: "高",
 };
 
 const statusLabels: Record<Status, string> = {
-  incomplete: "未完了",
-  complete: "完了",
+  open: "未完了",
+  done: "完了",
 };
 
 export default function TodoItem({
@@ -33,15 +33,15 @@ export default function TodoItem({
       <div className="flex items-start gap-4">
         <input
           type="checkbox"
-          checked={todo.status === "complete"}
-          onChange={() => onToggleStatus(todo.id)}
+          checked={todo.status === "done"}
+          onChange={() => onToggleStatus(todo.todoId)}
           className="mt-1 w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-900 cursor-pointer"
         />
 
         <div className="flex-1 min-w-0">
           <h2
             className={`text-base font-medium mb-1 ${
-              todo.status === "complete"
+              todo.status === "done"
                 ? "line-through text-gray-400"
                 : "text-gray-900"
             }`}
@@ -50,7 +50,7 @@ export default function TodoItem({
           </h2>
 
           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-            {todo.dueDate && (
+            {todo.due && (
               <span className="flex items-center gap-1">
                 <svg
                   className="w-4 h-4"
@@ -65,7 +65,7 @@ export default function TodoItem({
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
-                {formatDate(todo.dueDate)}
+                {formatDate(todo.due.toString())}
               </span>
             )}
 
@@ -73,7 +73,7 @@ export default function TodoItem({
               className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
                 todo.priority === "high"
                   ? "bg-red-50 text-red-700"
-                  : todo.priority === "medium"
+                  : todo.priority === "mid"
                     ? "bg-yellow-50 text-yellow-700"
                     : "bg-blue-50 text-blue-700"
               }`}
@@ -83,7 +83,7 @@ export default function TodoItem({
 
             <span
               className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
-                todo.status === "complete"
+                todo.status === "done"
                   ? "bg-green-50 text-green-700"
                   : "bg-gray-50 text-gray-700"
               }`}

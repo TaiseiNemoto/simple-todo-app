@@ -19,14 +19,16 @@ export default function EditTodoModal({
 }: EditTodoModalProps) {
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description);
-  const [dueDate, setDueDate] = useState(todo.dueDate || "");
+  const [dueDate, setDueDate] = useState(
+    todo.due ? todo.due.toISOString().split("T")[0] : ""
+  );
   const [priority, setPriority] = useState<Priority>(todo.priority);
   const [status, setStatus] = useState<Status>(todo.status);
 
   useEffect(() => {
     setTitle(todo.title);
     setDescription(todo.description);
-    setDueDate(todo.dueDate || "");
+    setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
   }, [todo]);
@@ -38,7 +40,7 @@ export default function EditTodoModal({
         ...todo,
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate || null,
+        due: dueDate ? new Date(dueDate) : null,
         priority,
         status,
       });
@@ -48,7 +50,7 @@ export default function EditTodoModal({
   const handleClose = () => {
     setTitle(todo.title);
     setDescription(todo.description);
-    setDueDate(todo.dueDate || "");
+    setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
     onClose();
@@ -124,7 +126,7 @@ export default function EditTodoModal({
               className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
             >
               <option value="low">低</option>
-              <option value="medium">中</option>
+              <option value="mid">中</option>
               <option value="high">高</option>
             </select>
           </div>
@@ -142,8 +144,8 @@ export default function EditTodoModal({
               onChange={(e) => setStatus(e.target.value as Status)}
               className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
             >
-              <option value="incomplete">未完了</option>
-              <option value="complete">完了</option>
+              <option value="open">未完了</option>
+              <option value="done">完了</option>
             </select>
           </div>
         </div>

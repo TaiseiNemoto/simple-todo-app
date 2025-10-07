@@ -10,7 +10,7 @@ interface CreateTodoModalProps {
   onSave: (todo: {
     title: string;
     description: string;
-    dueDate: string;
+    due: Date | null;
     priority: Priority;
   }) => void;
 }
@@ -23,7 +23,7 @@ export default function CreateTodoModal({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<Priority>("medium");
+  const [priority, setPriority] = useState<Priority>("mid");
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,13 +31,13 @@ export default function CreateTodoModal({
       onSave({
         title: title.trim(),
         description: description.trim(),
-        dueDate: dueDate || "",
+        due: dueDate ? new Date(dueDate) : null,
         priority,
       });
       setTitle("");
       setDescription("");
       setDueDate("");
-      setPriority("medium");
+      setPriority("mid");
     }
   };
 
@@ -45,7 +45,7 @@ export default function CreateTodoModal({
     setTitle("");
     setDescription("");
     setDueDate("");
-    setPriority("medium");
+    setPriority("mid");
     onClose();
   };
 
@@ -119,7 +119,7 @@ export default function CreateTodoModal({
               className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm"
             >
               <option value="low">低</option>
-              <option value="medium">中</option>
+              <option value="mid">中</option>
               <option value="high">高</option>
             </select>
           </div>

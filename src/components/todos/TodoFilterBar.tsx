@@ -38,8 +38,8 @@ export default function TodoFilterBar({
         className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm text-gray-900"
       >
         <option value="all">すべて</option>
-        <option value="incomplete">未完了</option>
-        <option value="complete">完了</option>
+        <option value="open">未完了</option>
+        <option value="done">完了</option>
       </select>
 
       <select
@@ -49,7 +49,7 @@ export default function TodoFilterBar({
       >
         <option value="all">すべて</option>
         <option value="low">低</option>
-        <option value="medium">中</option>
+        <option value="mid">中</option>
         <option value="high">高</option>
       </select>
 

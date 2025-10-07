@@ -6,20 +6,20 @@
 
 #### 6.1.1 Prismaスキーマとフロントエンド型の整合
 
-- [ ] `src/types/todo.ts` 修正
-  - [ ] `status` 型修正: `"incomplete" | "complete"` → `"open" | "done"`（Prismaと一致）
-  - [ ] `priority` 型修正: `"low" | "medium" | "high"` → `"low" | "mid" | "high"`（Prismaと一致）
-  - [ ] フィールド名の確認
+- [x] `src/types/todo.ts` 修正
+  - [x] `status` 型修正: `"incomplete" | "complete"` → `"open" | "done"`（Prismaと一致）
+  - [x] `priority` 型修正: `"low" | "medium" | "high"` → `"low" | "mid" | "high"`（Prismaと一致）
+  - [x] フィールド名の確認
     - `todoId`, `userId`, `title`, `description`, `status`, `priority`, `due`, `createdAt`, `updatedAt`
 
 #### 6.1.2 コンポーネントの型修正
 
-- [ ] すべてのコンポーネントで型定義を更新
-  - [ ] `src/app/todos/page.tsx`
-  - [ ] `src/components/todos/CreateTodoModal.tsx`
-  - [ ] `src/components/todos/EditTodoModal.tsx`
-  - [ ] `src/components/todos/TodoItem.tsx`
-  - [ ] `src/components/todos/TodoFilterBar.tsx`
+- [x] すべてのコンポーネントで型定義を更新
+  - [x] `src/app/todos/page.tsx`
+  - [x] `src/components/todos/CreateTodoModal.tsx`
+  - [x] `src/components/todos/EditTodoModal.tsx`
+  - [x] `src/components/todos/TodoItem.tsx`
+  - [x] `src/components/todos/TodoFilterBar.tsx`
 
 ### 6.2 APIクライアント基盤構築
 
