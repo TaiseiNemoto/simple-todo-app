@@ -39,28 +39,28 @@
 
 #### 6.2.2 API型定義
 
-- [ ] `src/lib/api/types.ts` 作成
-  - [ ] APIレスポンス型定義
+- [x] `src/lib/api/types.ts` 作成
+  - [x] APIレスポンス型定義
     - `ApiResponse<T>`: 成功レスポンス
     - `ApiError`: エラーレスポンス（code, message, details）
-  - [ ] APIリクエスト型定義
+  - [x] APIリクエスト型定義
     - `CreateTodoRequest`
     - `UpdateTodoRequest`
     - `TodoQueryParams`
 
 #### 6.2.3 TODO API関数
 
-- [ ] `src/lib/api/todos.ts` 作成
-  - [ ] `getTodos(params?: TodoQueryParams): Promise<Todo[]>`
+- [x] `src/lib/api/todos.ts` 作成
+  - [x] `getTodos(params?: TodoQueryParams): Promise<Todo[]>`
     - GET `/api/todos` 呼び出し
     - クエリパラメータ変換
-  - [ ] `getTodo(id: string): Promise<Todo>`
+  - [x] `getTodo(id: string): Promise<Todo>`
     - GET `/api/todos/[id]` 呼び出し
-  - [ ] `createTodo(data: CreateTodoRequest): Promise<Todo>`
+  - [x] `createTodo(data: CreateTodoRequest): Promise<Todo>`
     - POST `/api/todos` 呼び出し
-  - [ ] `updateTodo(id: string, data: UpdateTodoRequest): Promise<Todo>`
+  - [x] `updateTodo(id: string, data: UpdateTodoRequest): Promise<Todo>`
     - PATCH `/api/todos/[id]` 呼び出し
-  - [ ] `deleteTodo(id: string): Promise<void>`
+  - [x] `deleteTodo(id: string): Promise<void>`
     - DELETE `/api/todos/[id]` 呼び出し
 
 ### 6.3 カスタムフック実装
