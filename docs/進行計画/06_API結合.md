@@ -67,8 +67,8 @@
 
 #### 6.3.1 TODO一覧取得フック
 
-- [ ] `src/hooks/useTodos.ts` 作成
-  - [ ] `useTodos(params?: TodoQueryParams)` 実装
+- [x] `src/hooks/useTodos.ts` 作成
+  - [x] `useTodos(params?: TodoQueryParams)` 実装
     - 一覧データ取得
     - ローディング状態管理
     - エラー状態管理
