@@ -77,8 +77,8 @@
 
 #### 6.3.2 TODO操作フック
 
-- [ ] `src/hooks/useTodoMutations.ts` 作成
-  - [ ] `useTodoMutations()` 実装
+- [x] `src/hooks/useTodoMutations.ts` 作成
+  - [x] `useTodoMutations()` 実装
     - `createTodo`: 新規作成処理
     - `updateTodo`: 更新処理
     - `deleteTodo`: 削除処理
