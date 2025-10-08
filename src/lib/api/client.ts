@@ -108,6 +108,15 @@ export async function apiClient<T = unknown>(
         data?.message || `HTTP ${response.status}: ${response.statusText}`;
       const errorDetails = data?.details;
 
+      // 401エラー: 認証切れ -> サインインページへリダイレクト
+      if (response.status === 401) {
+        // クライアントサイドでのみリダイレクト実行
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname;
+          window.location.href = `/signin?callbackUrl=${encodeURIComponent(currentPath)}`;
+        }
+      }
+
       throw new ApiError(
         response.status,
         errorCode,

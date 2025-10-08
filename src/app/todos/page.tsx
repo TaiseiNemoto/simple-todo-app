@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 import CreateTodoModal from "@/components/todos/CreateTodoModal";
 import EditTodoModal from "@/components/todos/EditTodoModal";
 import TodoHeader from "@/components/todos/TodoHeader";
@@ -101,8 +102,8 @@ export default function TodosPage() {
     );
   };
 
-  const handleSignOut = () => {
-    alert("サインアウトしました");
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/signin" });
   };
 
   const handleEditTodo = (updatedTodo: Todo) => {
