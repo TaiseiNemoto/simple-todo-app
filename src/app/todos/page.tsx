@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { signOut } from "next-auth/react";
 import CreateTodoModal from "@/components/todos/CreateTodoModal";
 import EditTodoModal from "@/components/todos/EditTodoModal";
@@ -8,68 +8,11 @@ import TodoHeader from "@/components/todos/TodoHeader";
 import TodoFilterBar from "@/components/todos/TodoFilterBar";
 import TodoItem from "@/components/todos/TodoItem";
 import DeleteConfirmDialog from "@/components/todos/DeleteConfirmDialog";
+import { useTodos } from "@/hooks/useTodos";
 import type { Todo, Priority, Status } from "@/types/todo";
-
-const initialTodos: Todo[] = [
-  {
-    todoId: "1",
-    userId: "mock-user",
-    title: "プロジェクト仕様書を作成",
-    description: "新規プロジェクトの仕様書を作成する",
-    due: new Date("2025-10-05"),
-    priority: "high",
-    status: "open",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    todoId: "2",
-    userId: "mock-user",
-    title: "デザインレビュー",
-    description: "UIデザインのレビューを実施",
-    due: new Date("2025-10-08"),
-    priority: "mid",
-    status: "open",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    todoId: "3",
-    userId: "mock-user",
-    title: "データベース設計",
-    description: "データベーススキーマを設計",
-    due: null,
-    priority: "low",
-    status: "done",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    todoId: "4",
-    userId: "mock-user",
-    title: "API実装",
-    description: "RESTful APIを実装する",
-    due: new Date("2025-10-10"),
-    priority: "high",
-    status: "open",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    todoId: "5",
-    userId: "mock-user",
-    title: "テストコード作成",
-    description: "ユニットテストを作成",
-    due: new Date("2025-10-12"),
-    priority: "mid",
-    status: "done",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
+import type { TodoQueryParams } from "@/lib/api/types";
 
 export default function TodosPage() {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | Priority>("all");
@@ -77,69 +20,61 @@ export default function TodosPage() {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodo, setDeletingTodo] = useState<Todo | null>(null);
 
-  const filteredTodos = todos.filter((todo) => {
-    const matchesSearch =
-      searchText === "" ||
-      todo.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      todo.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || todo.status === statusFilter;
-    const matchesPriority =
-      priorityFilter === "all" || todo.priority === priorityFilter;
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
+  // APIクエリパラメータを作成
+  const queryParams = useMemo<TodoQueryParams | undefined>(() => {
+    const params: TodoQueryParams = {};
 
-  const toggleTodoStatus = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.todoId === id
-          ? {
-              ...todo,
-              status: todo.status === "done" ? "open" : "done",
-            }
-          : todo
-      )
-    );
-  };
+    // 検索テキスト
+    if (searchText.trim()) {
+      params.q = searchText.trim();
+    }
+
+    // ステータスフィルタ
+    if (statusFilter !== "all") {
+      params.status = statusFilter;
+    }
+
+    // 優先度フィルタ
+    if (priorityFilter !== "all") {
+      params.priority = priorityFilter;
+    }
+
+    // デフォルトのソート: 更新日時降順
+    params.sortBy = "updatedAt";
+    params.sortOrder = "desc";
+
+    return Object.keys(params).length > 0 ? params : undefined;
+  }, [searchText, statusFilter, priorityFilter]);
+
+  // TODO一覧取得
+  const { todos, isLoading, error, refetch } = useTodos(queryParams);
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/signin" });
   };
 
-  const handleEditTodo = (updatedTodo: Todo) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.todoId === updatedTodo.todoId ? updatedTodo : todo
-      )
-    );
+  const toggleTodoStatus = (id: string) => {
+    // TODO: 6.5.5でuseTodoMutationsのtoggleStatusに置き換え
+    console.log("Toggle status:", id);
+  };
+
+  const handleEditTodo = (_updatedTodo: Todo) => {
+    // TODO: 6.5.3でuseTodoMutationsのupdateTodoに置き換え
     setEditingTodo(null);
   };
 
   const handleDeleteConfirm = () => {
-    if (deletingTodo) {
-      setTodos(todos.filter((todo) => todo.todoId !== deletingTodo.todoId));
-      setDeletingTodo(null);
-    }
+    // TODO: 6.5.4でuseTodoMutationsのdeleteTodoに置き換え
+    setDeletingTodo(null);
   };
 
-  const handleCreateTodo = (newTodo: {
+  const handleCreateTodo = (_newTodo: {
     title: string;
     description: string;
     due: Date | null;
     priority: Priority;
   }) => {
-    const todo: Todo = {
-      todoId: Date.now().toString(),
-      userId: "mock-user",
-      title: newTodo.title,
-      description: newTodo.description,
-      due: newTodo.due,
-      priority: newTodo.priority,
-      status: "open",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    setTodos([todo, ...todos]);
+    // TODO: 6.5.2でuseTodoMutationsのcreateTodoに置き換え
     setShowCreateModal(false);
   };
 
@@ -158,23 +93,50 @@ export default function TodosPage() {
           onCreateClick={() => setShowCreateModal(true)}
         />
 
-        <div className="space-y-3">
-          {filteredTodos.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 text-center">
-              <p className="text-gray-400 text-sm">TODOが見つかりません</p>
-            </div>
-          ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem
-                key={todo.todoId}
-                todo={todo}
-                onToggleStatus={toggleTodoStatus}
-                onEdit={setEditingTodo}
-                onDelete={setDeletingTodo}
-              />
-            ))
-          )}
-        </div>
+        {/* ローディング状態 */}
+        {isLoading && (
+          <div className="bg-white rounded-xl p-12 text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <p className="text-gray-600 text-sm mt-4">読み込み中...</p>
+          </div>
+        )}
+
+        {/* エラー状態 */}
+        {error && !isLoading && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+            <p className="text-red-800 font-medium mb-2">
+              エラーが発生しました
+            </p>
+            <p className="text-red-600 text-sm mb-4">{error.message}</p>
+            <button
+              onClick={refetch}
+              className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+            >
+              再試行
+            </button>
+          </div>
+        )}
+
+        {/* TODO一覧 */}
+        {!isLoading && !error && (
+          <div className="space-y-3">
+            {todos.length === 0 ? (
+              <div className="bg-white rounded-xl p-12 text-center">
+                <p className="text-gray-400 text-sm">TODOが見つかりません</p>
+              </div>
+            ) : (
+              todos.map((todo) => (
+                <TodoItem
+                  key={todo.todoId}
+                  todo={todo}
+                  onToggleStatus={toggleTodoStatus}
+                  onEdit={setEditingTodo}
+                  onDelete={setDeletingTodo}
+                />
+              ))
+            )}
+          </div>
+        )}
       </main>
 
       <CreateTodoModal
