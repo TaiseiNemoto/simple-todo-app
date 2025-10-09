@@ -63,9 +63,9 @@ export default function TodosPage() {
     refetch();
   };
 
-  const handleDeleteConfirm = () => {
-    // TODO: 6.5.4でuseTodoMutationsのdeleteTodoに置き換え
+  const handleDeleteSuccess = () => {
     setDeletingTodo(null);
+    refetch();
   };
 
   const handleCreateSuccess = () => {
@@ -152,9 +152,10 @@ export default function TodosPage() {
       {deletingTodo && (
         <DeleteConfirmDialog
           isOpen={!!deletingTodo}
+          todoId={deletingTodo.todoId}
           todoTitle={deletingTodo.title}
           onClose={() => setDeletingTodo(null)}
-          onConfirm={handleDeleteConfirm}
+          onSuccess={handleDeleteSuccess}
         />
       )}
     </div>

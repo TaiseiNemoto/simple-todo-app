@@ -152,14 +152,14 @@
 
 #### 6.5.4 TODO削除結合
 
-- [ ] `src/components/todos/DeleteConfirmDialog.tsx` 修正
-  - [ ] `useTodoMutations()` フック使用
-  - [ ] `deleteTodo()` 関数呼び出し
-  - [ ] 成功時の処理
+- [x] `src/components/todos/DeleteConfirmDialog.tsx` 修正
+  - [x] `useTodoMutations()` フック使用
+  - [x] `deleteTodo()` 関数呼び出し
+  - [x] 成功時の処理
     - ダイアログクローズ
     - 一覧再取得
     - 成功メッセージ表示（オプショナル）
-  - [ ] エラー時の処理
+  - [x] エラー時の処理
     - エラーメッセージ表示
 
 #### 6.5.5 ステータス切替結合
