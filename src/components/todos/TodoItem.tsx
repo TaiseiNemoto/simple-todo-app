@@ -1,10 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import type { Todo, Priority, Status } from "@/types/todo";
+import { useTodoMutations } from "@/hooks/useTodoMutations";
 
 interface TodoItemProps {
   todo: Todo;
-  onToggleStatus: (id: string) => void;
   onEdit: (todo: Todo) => void;
   onDelete: (todo: Todo) => void;
+  onToggleSuccess?: () => void;
 }
 
 const priorityLabels: Record<Priority, string> = {
@@ -20,28 +24,54 @@ const statusLabels: Record<Status, string> = {
 
 export default function TodoItem({
   todo,
-  onToggleStatus,
   onEdit,
   onDelete,
+  onToggleSuccess,
 }: TodoItemProps) {
+  const [isOptimistic, setIsOptimistic] = useState(false);
+  const [optimisticStatus, setOptimisticStatus] = useState<Status>(todo.status);
+  const { toggleStatus, mutationState } = useTodoMutations();
+
   const formatDate = (dateStr: string) => {
     return dateStr.replace(/-/g, "/");
   };
+
+  const handleToggleStatus = async () => {
+    // 楽観的UI更新
+    const newStatus: Status = todo.status === "done" ? "open" : "done";
+    setIsOptimistic(true);
+    setOptimisticStatus(newStatus);
+
+    await toggleStatus(todo, {
+      onSuccess: () => {
+        setIsOptimistic(false);
+        onToggleSuccess?.();
+      },
+      onError: () => {
+        // エラー時はロールバック
+        setIsOptimistic(false);
+        setOptimisticStatus(todo.status);
+      },
+    });
+  };
+
+  const currentStatus = isOptimistic ? optimisticStatus : todo.status;
 
   return (
     <div className="bg-white rounded-xl p-5 hover:shadow-md transition-shadow border border-gray-100">
       <div className="flex items-start gap-4">
         <input
           type="checkbox"
-          checked={todo.status === "done"}
-          onChange={() => onToggleStatus(todo.todoId)}
-          className="mt-1 w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-900 cursor-pointer"
+          checked={currentStatus === "done"}
+          onChange={handleToggleStatus}
+          disabled={mutationState.isLoading}
+          className="mt-1 w-5 h-5 text-gray-900 border-gray-300 rounded focus:ring-gray-900 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         />
 
         <div className="flex-1 min-w-0">
           <h2
             className={`text-base font-medium mb-1 ${
-              todo.status === "done"
+              currentStatus === "done"
                 ? "line-through text-gray-400"
                 : "text-gray-900"
             }`}
@@ -83,12 +113,12 @@ export default function TodoItem({
 
             <span
               className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
-                todo.status === "done"
+                currentStatus === "done"
                   ? "bg-green-50 text-green-700"
                   : "bg-gray-50 text-gray-700"
               }`}
             >
-              {statusLabels[todo.status]}
+              {statusLabels[currentStatus]}
             </span>
           </div>
         </div>

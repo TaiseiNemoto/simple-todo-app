@@ -53,9 +53,8 @@ export default function TodosPage() {
     await signOut({ callbackUrl: "/signin" });
   };
 
-  const toggleTodoStatus = (id: string) => {
-    // TODO: 6.5.5でuseTodoMutationsのtoggleStatusに置き換え
-    console.log("Toggle status:", id);
+  const handleToggleSuccess = () => {
+    refetch();
   };
 
   const handleEditSuccess = () => {
@@ -124,9 +123,9 @@ export default function TodosPage() {
                 <TodoItem
                   key={todo.todoId}
                   todo={todo}
-                  onToggleStatus={toggleTodoStatus}
                   onEdit={setEditingTodo}
                   onDelete={setDeletingTodo}
+                  onToggleSuccess={handleToggleSuccess}
                 />
               ))
             )}

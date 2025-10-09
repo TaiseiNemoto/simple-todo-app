@@ -164,11 +164,11 @@
 
 #### 6.5.5 ステータス切替結合
 
-- [ ] `src/components/todos/TodoItem.tsx` 修正
-  - [ ] `useTodoMutations()` フック使用
-  - [ ] `toggleStatus()` 関数呼び出し
-  - [ ] 楽観的UI更新（即座にチェック状態変更）
-  - [ ] エラー時はロールバック
+- [x] `src/components/todos/TodoItem.tsx` 修正
+  - [x] `useTodoMutations()` フック使用
+  - [x] `toggleStatus()` 関数呼び出し
+  - [x] 楽観的UI更新（即座にチェック状態変更）
+  - [x] エラー時はロールバック
 
 ### 6.6 エラーハンドリング統合
 
