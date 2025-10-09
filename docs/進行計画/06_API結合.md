@@ -126,14 +126,14 @@
 
 #### 6.5.2 TODO新規作成結合
 
-- [ ] `src/components/todos/CreateTodoModal.tsx` 修正
-  - [ ] `useTodoMutations()` フック使用
-  - [ ] `createTodo()` 関数呼び出し
-  - [ ] 成功時の処理
+- [x] `src/components/todos/CreateTodoModal.tsx` 修正
+  - [x] `useTodoMutations()` フック使用
+  - [x] `createTodo()` 関数呼び出し
+  - [x] 成功時の処理
     - モーダルクローズ
     - 一覧再取得（`refetch()`）
     - 成功メッセージ表示（オプショナル）
-  - [ ] エラー時の処理
+  - [x] エラー時の処理
     - エラーメッセージ表示
     - モーダルは開いたまま
 

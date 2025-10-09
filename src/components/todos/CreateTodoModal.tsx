@@ -3,42 +3,57 @@
 import { useState } from "react";
 import type { Priority } from "@/types/todo";
 import Dialog from "@/components/common/Dialog";
+import { useTodoMutations } from "@/hooks/useTodoMutations";
 
 interface CreateTodoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (todo: {
-    title: string;
-    description: string;
-    due: Date | null;
-    priority: Priority;
-  }) => void;
+  onSuccess?: () => void;
 }
 
 export default function CreateTodoModal({
   isOpen,
   onClose,
-  onSave,
+  onSuccess,
 }: CreateTodoModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<Priority>("mid");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSave = (e: React.FormEvent) => {
+  const { createTodo, mutationState } = useTodoMutations();
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim()) {
-      onSave({
+    if (!title.trim()) return;
+
+    setError(null);
+
+    await createTodo(
+      {
         title: title.trim(),
         description: description.trim(),
-        due: dueDate ? new Date(dueDate) : null,
+        due: dueDate || undefined,
         priority,
-      });
-      setTitle("");
-      setDescription("");
-      setDueDate("");
-      setPriority("mid");
-    }
+      },
+      {
+        onSuccess: () => {
+          // フォームをリセット
+          setTitle("");
+          setDescription("");
+          setDueDate("");
+          setPriority("mid");
+          // モーダルを閉じる
+          onClose();
+          // 一覧再取得のコールバック
+          onSuccess?.();
+        },
+        onError: (err) => {
+          setError(err.message);
+        },
+      }
+    );
   };
 
   const handleClose = () => {
@@ -46,12 +61,18 @@ export default function CreateTodoModal({
     setDescription("");
     setDueDate("");
     setPriority("mid");
+    setError(null);
     onClose();
   };
 
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title="新規TODO作成">
       <form onSubmit={handleSave}>
+        {error && (
+          <div className="mx-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
         <div className="p-6 space-y-5">
           <div>
             <label
@@ -127,17 +148,19 @@ export default function CreateTodoModal({
 
         <div className="flex gap-3 justify-end p-6 border-t border-gray-100">
           <button
+            type="button"
             onClick={handleClose}
-            className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            disabled={mutationState.isLoading}
+            className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             キャンセル
           </button>
           <button
             type="submit"
-            disabled={!title.trim()}
+            disabled={!title.trim() || mutationState.isLoading}
             className="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
           >
-            保存
+            {mutationState.isLoading ? "保存中..." : "保存"}
           </button>
         </div>
       </form>

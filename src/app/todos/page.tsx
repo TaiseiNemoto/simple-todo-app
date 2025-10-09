@@ -68,14 +68,9 @@ export default function TodosPage() {
     setDeletingTodo(null);
   };
 
-  const handleCreateTodo = (_newTodo: {
-    title: string;
-    description: string;
-    due: Date | null;
-    priority: Priority;
-  }) => {
-    // TODO: 6.5.2でuseTodoMutationsのcreateTodoに置き換え
+  const handleCreateSuccess = () => {
     setShowCreateModal(false);
+    refetch();
   };
 
   return (
@@ -142,7 +137,7 @@ export default function TodosPage() {
       <CreateTodoModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onSave={handleCreateTodo}
+        onSuccess={handleCreateSuccess}
       />
 
       {editingTodo && (
