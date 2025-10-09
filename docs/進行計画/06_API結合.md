@@ -181,10 +181,10 @@
 
 #### 6.6.2 エラー表示コンポーネント
 
-- [ ] `src/components/common/ErrorMessage.tsx` 作成
-  - [ ] エラーメッセージ表示UI
-  - [ ] エラーコード別スタイリング
-  - [ ] 閉じるボタン
+- [x] `src/components/common/ErrorMessage.tsx` 作成
+  - [x] エラーメッセージ表示UI
+  - [x] エラーコード別スタイリング
+  - [x] 閉じるボタン
 
 ### 6.7 テスト実装
 
