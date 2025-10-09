@@ -58,9 +58,9 @@ export default function TodosPage() {
     console.log("Toggle status:", id);
   };
 
-  const handleEditTodo = (_updatedTodo: Todo) => {
-    // TODO: 6.5.3でuseTodoMutationsのupdateTodoに置き換え
+  const handleEditSuccess = () => {
     setEditingTodo(null);
+    refetch();
   };
 
   const handleDeleteConfirm = () => {
@@ -145,7 +145,7 @@ export default function TodosPage() {
           isOpen={!!editingTodo}
           todo={editingTodo}
           onClose={() => setEditingTodo(null)}
-          onSave={handleEditTodo}
+          onSuccess={handleEditSuccess}
         />
       )}
 

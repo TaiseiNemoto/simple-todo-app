@@ -3,19 +3,20 @@
 import { useState, useEffect } from "react";
 import type { Todo, Priority, Status } from "@/types/todo";
 import Dialog from "@/components/common/Dialog";
+import { useTodoMutations } from "@/hooks/useTodoMutations";
 
 interface EditTodoModalProps {
   isOpen: boolean;
   todo: Todo;
   onClose: () => void;
-  onSave: (todo: Todo) => void;
+  onSuccess?: () => void;
 }
 
 export default function EditTodoModal({
   isOpen,
   todo,
   onClose,
-  onSave,
+  onSuccess,
 }: EditTodoModalProps) {
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description);
@@ -24,6 +25,9 @@ export default function EditTodoModal({
   );
   const [priority, setPriority] = useState<Priority>(todo.priority);
   const [status, setStatus] = useState<Status>(todo.status);
+  const [error, setError] = useState<string | null>(null);
+
+  const { updateTodo, mutationState } = useTodoMutations();
 
   useEffect(() => {
     setTitle(todo.title);
@@ -31,20 +35,36 @@ export default function EditTodoModal({
     setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
+    setError(null);
   }, [todo]);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (title.trim()) {
-      onSave({
-        ...todo,
+    if (!title.trim()) return;
+
+    setError(null);
+
+    await updateTodo(
+      todo.todoId,
+      {
         title: title.trim(),
         description: description.trim(),
-        due: dueDate ? new Date(dueDate) : null,
+        due: dueDate || undefined,
         priority,
         status,
-      });
-    }
+      },
+      {
+        onSuccess: () => {
+          // モーダルを閉じる
+          onClose();
+          // 一覧再取得のコールバック
+          onSuccess?.();
+        },
+        onError: (err) => {
+          setError(err.message);
+        },
+      }
+    );
   };
 
   const handleClose = () => {
@@ -53,12 +73,18 @@ export default function EditTodoModal({
     setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
+    setError(null);
     onClose();
   };
 
   return (
     <Dialog isOpen={isOpen} onClose={handleClose} title="TODO編集">
       <form onSubmit={handleSave}>
+        {error && (
+          <div className="mx-6 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
         <div className="p-6 space-y-5">
           <div>
             <label
@@ -152,17 +178,19 @@ export default function EditTodoModal({
 
         <div className="flex gap-3 justify-end p-6 border-t border-gray-100">
           <button
+            type="button"
             onClick={handleClose}
-            className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            disabled={mutationState.isLoading}
+            className="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             キャンセル
           </button>
           <button
             type="submit"
-            disabled={!title.trim()}
+            disabled={!title.trim() || mutationState.isLoading}
             className="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-900"
           >
-            保存
+            {mutationState.isLoading ? "保存中..." : "保存"}
           </button>
         </div>
       </form>
