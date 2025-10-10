@@ -17,17 +17,20 @@ import { ZodError } from "zod";
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // セッション認証チェック
     const session = await requireAuth();
     const userId = session.user.id;
 
+    // paramsを解決
+    const { id } = await params;
+
     // Prisma findUnique
     const todo = await prisma.todo.findUnique({
       where: {
-        todoId: params.id,
+        todoId: id,
       },
     });
 
@@ -60,17 +63,20 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // セッション認証チェック
     const session = await requireAuth();
     const userId = session.user.id;
 
+    // paramsを解決
+    const { id } = await params;
+
     // Prisma findUnique（存在確認）
     const todo = await prisma.todo.findUnique({
       where: {
-        todoId: params.id,
+        todoId: id,
       },
     });
 
@@ -93,7 +99,7 @@ export async function PATCH(
     // Prisma update
     const updatedTodo = await prisma.todo.update({
       where: {
-        todoId: params.id,
+        todoId: id,
       },
       data: validatedData,
     });
@@ -124,17 +130,20 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // セッション認証チェック
     const session = await requireAuth();
     const userId = session.user.id;
 
+    // paramsを解決
+    const { id } = await params;
+
     // Prisma findUnique（存在確認）
     const todo = await prisma.todo.findUnique({
       where: {
-        todoId: params.id,
+        todoId: id,
       },
     });
 
@@ -151,7 +160,7 @@ export async function DELETE(
     // Prisma delete
     await prisma.todo.delete({
       where: {
-        todoId: params.id,
+        todoId: id,
       },
     });
 
