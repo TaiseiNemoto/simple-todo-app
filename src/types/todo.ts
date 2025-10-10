@@ -22,7 +22,7 @@ export interface Todo {
   description: string;
   status: Status;
   priority: Priority;
-  due: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
+  due: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
