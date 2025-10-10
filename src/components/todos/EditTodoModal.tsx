@@ -21,7 +21,7 @@ export default function EditTodoModal({
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description);
   const [dueDate, setDueDate] = useState(
-    todo.due ? todo.due.toISOString().split("T")[0] : ""
+    todo.due ? todo.due.split("T")[0] : ""
   );
   const [priority, setPriority] = useState<Priority>(todo.priority);
   const [status, setStatus] = useState<Status>(todo.status);
@@ -32,7 +32,7 @@ export default function EditTodoModal({
   useEffect(() => {
     setTitle(todo.title);
     setDescription(todo.description);
-    setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
+    setDueDate(todo.due ? todo.due.split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
     setError(null);
@@ -70,7 +70,7 @@ export default function EditTodoModal({
   const handleClose = () => {
     setTitle(todo.title);
     setDescription(todo.description);
-    setDueDate(todo.due ? todo.due.toISOString().split("T")[0] : "");
+    setDueDate(todo.due ? todo.due.split("T")[0] : "");
     setPriority(todo.priority);
     setStatus(todo.status);
     setError(null);
