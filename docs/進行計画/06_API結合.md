@@ -198,10 +198,10 @@
 
 #### 6.7.2 TODO API関数テスト
 
-- [ ] `src/lib/api/todos.test.ts` 作成
-  - [ ] 各API関数の正常系テスト
-  - [ ] エラー系テスト
-  - [ ] MSWでモックレスポンス設定
+- [x] `src/lib/api/todos.test.ts` 作成
+  - [x] 各API関数の正常系テスト（getTodos/getTodo/createTodo/updateTodo/deleteTodo 合計29テスト）
+  - [x] エラー系テスト（401/403/404/400/500エラー）
+  - [x] vi.fn()を使用した直接的なfetchモック（MSWは不使用）
 
 #### 6.7.3 カスタムフックテスト
 
