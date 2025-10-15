@@ -205,14 +205,18 @@
 
 #### 6.7.3 カスタムフックテスト
 
-- [ ] `src/hooks/useTodos.test.ts` 作成
-  - [ ] データ取得テスト
-  - [ ] ローディング状態テスト
-  - [ ] エラー状態テスト
-- [ ] `src/hooks/useTodoMutations.test.ts` 作成
-  - [ ] 各操作関数のテスト
-  - [ ] 成功時コールバックテスト
-  - [ ] エラーハンドリングテスト
+- [x] `src/hooks/useTodos.test.ts` 作成
+  - [x] データ取得テスト（マウント時、パラメータ指定、パラメータ変更、refetch 4テスト）
+  - [x] ローディング状態テスト（取得中、refetch中 2テスト）
+  - [x] エラー状態テスト（取得エラー、Error以外、refetchエラー、エラー後の成功 4テスト）
+  - [x] 合計10テスト すべてパス
+- [x] `src/hooks/useTodoMutations.test.ts` 作成
+  - [x] 各操作関数のテスト（createTodo/updateTodo/deleteTodo/toggleStatus 15テスト）
+  - [x] 成功時コールバックテスト
+  - [x] エラーハンドリングテスト
+  - [x] mutationState状態管理テスト（5テスト）
+  - [x] 複数操作関数の連携テスト（3テスト）
+  - [x] 合計23テスト すべてパス
 
 #### 6.7.4 結合テスト（手動）
 
