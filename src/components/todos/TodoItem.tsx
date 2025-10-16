@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Todo, Priority, Status } from "@/types/todo";
 import { useTodoMutations } from "@/hooks/useTodoMutations";
+import { formatDate } from "@/lib/utils/format";
 
 interface TodoItemProps {
   todo: Todo;
@@ -31,10 +32,6 @@ export default function TodoItem({
   const [isOptimistic, setIsOptimistic] = useState(false);
   const [optimisticStatus, setOptimisticStatus] = useState<Status>(todo.status);
   const { toggleStatus, mutationState } = useTodoMutations();
-
-  const formatDate = (dateStr: string) => {
-    return dateStr.replace(/-/g, "/");
-  };
 
   const handleToggleStatus = async () => {
     // 楽観的UI更新
