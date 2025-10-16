@@ -55,7 +55,7 @@ export default function TodoFilterBar({
 
       <button
         onClick={onCreateClick}
-        className="px-6 py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors whitespace-nowrap text-sm"
+        className="px-6 py-2.5 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors whitespace-nowrap text-sm cursor-pointer"
       >
         新規作成
       </button>

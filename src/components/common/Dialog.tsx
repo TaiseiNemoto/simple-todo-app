@@ -55,7 +55,7 @@ export default function Dialog({
         <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
         <button
           onClick={onClose}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
           aria-label="閉じる"
         >
           <svg

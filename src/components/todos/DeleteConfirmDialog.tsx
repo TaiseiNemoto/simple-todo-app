@@ -60,7 +60,7 @@ export default function DeleteConfirmDialog({
             type="button"
             onClick={handleClose}
             disabled={mutationState.isLoading}
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             キャンセル
           </button>
@@ -68,7 +68,7 @@ export default function DeleteConfirmDialog({
             type="button"
             onClick={handleConfirm}
             disabled={mutationState.isLoading}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {mutationState.isLoading ? "削除中..." : "削除"}
           </button>

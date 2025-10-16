@@ -126,7 +126,7 @@ export default function TodoItem({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEdit(todo)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
             title="編集"
           >
             <svg
@@ -145,7 +145,7 @@ export default function TodoItem({
           </button>
           <button
             onClick={() => onDelete(todo)}
-            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
             title="削除"
           >
             <svg
