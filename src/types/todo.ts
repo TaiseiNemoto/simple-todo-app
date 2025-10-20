@@ -2,15 +2,10 @@
  * TODO関連の共通型定義
  */
 
-/**
- * 優先度の型定義
- */
-export type Priority = "low" | "mid" | "high";
+import type { TodoStatus, TodoPriority } from "@/lib/validations/todo";
 
-/**
- * ステータスの型定義
- */
-export type Status = "open" | "done";
+export type Status = TodoStatus;
+export type Priority = TodoPriority;
 
 /**
  * TODOアイテムのインターフェース
