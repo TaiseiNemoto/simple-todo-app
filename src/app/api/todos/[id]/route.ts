@@ -9,6 +9,7 @@ import {
   invalidBodyError,
   internalError,
 } from "@/lib/errors";
+import { UnauthorizedError } from "@/lib/errors/custom-errors";
 import { ZodError } from "zod";
 
 /**
@@ -47,8 +48,8 @@ export async function GET(
     return NextResponse.json(todo);
   } catch (error) {
     // 認証エラー
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return unauthorizedError();
+    if (error instanceof UnauthorizedError) {
+      return unauthorizedError(error.message);
     }
 
     // その他のエラー
@@ -107,8 +108,8 @@ export async function PATCH(
     return NextResponse.json(updatedTodo);
   } catch (error) {
     // 認証エラー
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return unauthorizedError();
+    if (error instanceof UnauthorizedError) {
+      return unauthorizedError(error.message);
     }
 
     // バリデーションエラー
@@ -167,8 +168,8 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     // 認証エラー
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return unauthorizedError();
+    if (error instanceof UnauthorizedError) {
+      return unauthorizedError(error.message);
     }
 
     // その他のエラー

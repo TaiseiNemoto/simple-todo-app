@@ -8,6 +8,7 @@ import {
   invalidBodyError,
   internalError,
 } from "@/lib/errors";
+import { UnauthorizedError } from "@/lib/errors/custom-errors";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(todos);
   } catch (error) {
     // 認証エラー
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+    if (error instanceof UnauthorizedError) {
       return unauthorizedError();
     }
 
@@ -132,8 +133,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newTodo, { status: 201 });
   } catch (error) {
     // 認証エラー
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      return unauthorizedError();
+    if (error instanceof UnauthorizedError) {
+      return unauthorizedError(error.message);
     }
 
     // バリデーションエラー

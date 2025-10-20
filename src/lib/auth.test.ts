@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { requireAuth, getServerSession } from "./auth";
+import { UnauthorizedError } from "./errors/custom-errors";
 import type { Session } from "next-auth";
 
 // auth モジュールのモック
@@ -86,23 +87,25 @@ describe("requireAuth", () => {
   });
 
   describe("異常系", () => {
-    it("セッションがnullの場合、UNAUTHORIZEDエラーをスロー", async () => {
+    it("セッションがnullの場合、UnauthorizedErrorをスロー", async () => {
       mockAuth.mockResolvedValue(null);
 
-      await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
+      await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
+      await expect(requireAuth()).rejects.toThrow("認証が必要です");
     });
 
-    it("userが存在しない場合、UNAUTHORIZEDエラーをスロー", async () => {
+    it("userが存在しない場合、UnauthorizedErrorをスロー", async () => {
       const mockSession = {
         expires: new Date(Date.now() + 86400000).toISOString(),
       } as Session;
 
       mockAuth.mockResolvedValue(mockSession);
 
-      await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
+      await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
+      await expect(requireAuth()).rejects.toThrow("認証が必要です");
     });
 
-    it("user.idが存在しない場合、UNAUTHORIZEDエラーをスロー", async () => {
+    it("user.idが存在しない場合、UnauthorizedErrorをスロー", async () => {
       const mockSession: Session = {
         user: {
           name: "User Without ID",
@@ -112,10 +115,11 @@ describe("requireAuth", () => {
 
       mockAuth.mockResolvedValue(mockSession);
 
-      await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
+      await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
+      await expect(requireAuth()).rejects.toThrow("認証が必要です");
     });
 
-    it("user.idが空文字の場合、UNAUTHORIZEDエラーをスロー", async () => {
+    it("user.idが空文字の場合、UnauthorizedErrorをスロー", async () => {
       const mockSession: Session = {
         user: {
           id: "",
@@ -126,7 +130,8 @@ describe("requireAuth", () => {
 
       mockAuth.mockResolvedValue(mockSession);
 
-      await expect(requireAuth()).rejects.toThrow("UNAUTHORIZED");
+      await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
+      await expect(requireAuth()).rejects.toThrow("認証が必要です");
     });
   });
 });
