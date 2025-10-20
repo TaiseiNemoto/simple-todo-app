@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useTodos } from "./useTodos";
 import * as todosApi from "@/lib/api/todos";
-import type { Todo } from "@/types/todo";
+import type { Todo, Status } from "@/types/todo";
 
 // APIモジュールをモック化
 vi.mock("@/lib/api/todos");
@@ -91,7 +91,7 @@ describe("useTodos", () => {
       const { result, rerender } = renderHook(
         ({ params }) => useTodos(params),
         {
-          initialProps: { params: { status: "open" as const } },
+          initialProps: { params: { status: "open" as Status } },
         }
       );
 
@@ -103,7 +103,7 @@ describe("useTodos", () => {
       expect(todosApi.getTodos).toHaveBeenCalledWith({ status: "open" });
 
       // paramsを変更
-      rerender({ params: { status: "done" as const } });
+      rerender({ params: { status: "done" as Status } });
 
       await waitFor(() => {
         expect(todosApi.getTodos).toHaveBeenCalledTimes(2);

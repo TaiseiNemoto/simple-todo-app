@@ -27,8 +27,8 @@ describe("TODO API関数", () => {
             status: "open",
             priority: "mid",
             due: null,
-            createdAt: new Date("2024-01-01"),
-            updatedAt: new Date("2024-01-01"),
+            createdAt: new Date("2024-01-01").toISOString(),
+            updatedAt: new Date("2024-01-01").toISOString(),
           },
           {
             todoId: "2",
@@ -37,9 +37,9 @@ describe("TODO API関数", () => {
             description: "Description 2",
             status: "done",
             priority: "high",
-            due: new Date("2024-12-31"),
-            createdAt: new Date("2024-01-02"),
-            updatedAt: new Date("2024-01-02"),
+            due: new Date("2024-12-31").toISOString(),
+            createdAt: new Date("2024-01-02").toISOString(),
+            updatedAt: new Date("2024-01-02").toISOString(),
           },
         ];
 
@@ -73,8 +73,8 @@ describe("TODO API関数", () => {
             status: "open",
             priority: "high",
             due: null,
-            createdAt: new Date("2024-01-01"),
-            updatedAt: new Date("2024-01-01"),
+            createdAt: new Date("2024-01-01").toISOString(),
+            updatedAt: new Date("2024-01-01").toISOString(),
           },
         ];
 
@@ -235,9 +235,9 @@ describe("TODO API関数", () => {
           description: "Test Description",
           status: "open",
           priority: "high",
-          due: new Date("2024-12-31"),
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-01"),
+          due: new Date("2024-12-31").toISOString(),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-01").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
@@ -353,8 +353,8 @@ describe("TODO API関数", () => {
           status: "open",
           priority: "mid",
           due: null,
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-01"),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-01").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
@@ -395,9 +395,9 @@ describe("TODO API関数", () => {
           description: "Detailed description",
           status: "open",
           priority: "high",
-          due: new Date("2024-12-31"),
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-01"),
+          due: new Date("2024-12-31").toISOString(),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-01").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
@@ -520,8 +520,8 @@ describe("TODO API関数", () => {
           status: "open",
           priority: "mid",
           due: null,
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-02"),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-02").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
@@ -558,8 +558,8 @@ describe("TODO API関数", () => {
           status: "done",
           priority: "mid",
           due: null,
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-02"),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-02").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
@@ -590,9 +590,9 @@ describe("TODO API関数", () => {
           description: "Updated Description",
           status: "open",
           priority: "high",
-          due: new Date("2024-12-31"),
-          createdAt: new Date("2024-01-01"),
-          updatedAt: new Date("2024-01-02"),
+          due: new Date("2024-12-31").toISOString(),
+          createdAt: new Date("2024-01-01").toISOString(),
+          updatedAt: new Date("2024-01-02").toISOString(),
         };
 
         global.fetch = vi.fn(() =>
