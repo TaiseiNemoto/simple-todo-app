@@ -1,11 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  createTodoSchema,
-  updateTodoSchema,
-  todoQuerySchema,
-  TODO_STATUSES,
-  TODO_PRIORITIES,
-} from "./todo";
+import { createTodoSchema, updateTodoSchema, todoQuerySchema } from "./todo";
 
 describe("createTodoSchema", () => {
   describe("正常系", () => {

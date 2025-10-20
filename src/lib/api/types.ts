@@ -1,4 +1,4 @@
-import type { Todo, Priority, Status } from "@/types/todo";
+import type { Priority, Status } from "@/types/todo";
 import type { ApiError } from "@/types/error";
 
 /**
