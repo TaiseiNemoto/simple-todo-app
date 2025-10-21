@@ -10,6 +10,7 @@ import {
   internalError,
 } from "@/lib/errors";
 import { UnauthorizedError } from "@/lib/errors/custom-errors";
+import { ERROR_MESSAGES } from "@/lib/constants/messages";
 import { ZodError } from "zod";
 
 /**
@@ -37,12 +38,12 @@ export async function GET(
 
     // 存在チェック
     if (!todo) {
-      return notFoundError("TODOが見つかりません");
+      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
     }
 
     // 所有者チェック
     if (todo.userId !== userId) {
-      return forbiddenError("このTODOへのアクセス権限がありません");
+      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
     }
 
     return NextResponse.json(todo);
@@ -83,12 +84,12 @@ export async function PATCH(
 
     // 存在チェック
     if (!todo) {
-      return notFoundError("TODOが見つかりません");
+      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
     }
 
     // 所有者チェック
     if (todo.userId !== userId) {
-      return forbiddenError("このTODOへのアクセス権限がありません");
+      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
     }
 
     // リクエストボディ取得
@@ -114,7 +115,7 @@ export async function PATCH(
 
     // バリデーションエラー
     if (error instanceof ZodError) {
-      return invalidBodyError("リクエストボディが不正です", {
+      return invalidBodyError(ERROR_MESSAGES.VALIDATION.INVALID_BODY, {
         issues: error.issues,
       });
     }
@@ -150,12 +151,12 @@ export async function DELETE(
 
     // 存在チェック
     if (!todo) {
-      return notFoundError("TODOが見つかりません");
+      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
     }
 
     // 所有者チェック
     if (todo.userId !== userId) {
-      return forbiddenError("このTODOへのアクセス権限がありません");
+      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
     }
 
     // Prisma delete

@@ -9,6 +9,7 @@ import {
   internalError,
 } from "@/lib/errors";
 import { UnauthorizedError } from "@/lib/errors/custom-errors";
+import { ERROR_MESSAGES } from "@/lib/constants/messages";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 
@@ -91,9 +92,12 @@ export async function GET(request: NextRequest) {
 
     // バリデーションエラー
     if (error instanceof ZodError) {
-      return invalidParameterError("クエリパラメータが不正です", {
-        issues: error.issues,
-      });
+      return invalidParameterError(
+        ERROR_MESSAGES.VALIDATION.INVALID_PARAMETER,
+        {
+          issues: error.issues,
+        }
+      );
     }
 
     // その他のエラー
@@ -139,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     // バリデーションエラー
     if (error instanceof ZodError) {
-      return invalidBodyError("リクエストボディが不正です", {
+      return invalidBodyError(ERROR_MESSAGES.VALIDATION.INVALID_BODY, {
         issues: error.issues,
       });
     }

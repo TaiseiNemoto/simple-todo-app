@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { requireAuth, getServerSession } from "./auth";
 import { UnauthorizedError } from "./errors/custom-errors";
+import { ERROR_MESSAGES } from "./constants/messages";
 import type { Session } from "next-auth";
 
 // auth モジュールのモック
@@ -91,7 +92,9 @@ describe("requireAuth", () => {
       mockAuth.mockResolvedValue(null);
 
       await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
-      await expect(requireAuth()).rejects.toThrow("認証が必要です");
+      await expect(requireAuth()).rejects.toThrow(
+        ERROR_MESSAGES.AUTH.UNAUTHORIZED
+      );
     });
 
     it("userが存在しない場合、UnauthorizedErrorをスロー", async () => {
@@ -102,7 +105,9 @@ describe("requireAuth", () => {
       mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
-      await expect(requireAuth()).rejects.toThrow("認証が必要です");
+      await expect(requireAuth()).rejects.toThrow(
+        ERROR_MESSAGES.AUTH.UNAUTHORIZED
+      );
     });
 
     it("user.idが存在しない場合、UnauthorizedErrorをスロー", async () => {
@@ -116,7 +121,9 @@ describe("requireAuth", () => {
       mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
-      await expect(requireAuth()).rejects.toThrow("認証が必要です");
+      await expect(requireAuth()).rejects.toThrow(
+        ERROR_MESSAGES.AUTH.UNAUTHORIZED
+      );
     });
 
     it("user.idが空文字の場合、UnauthorizedErrorをスロー", async () => {
@@ -131,7 +138,9 @@ describe("requireAuth", () => {
       mockAuth.mockResolvedValue(mockSession);
 
       await expect(requireAuth()).rejects.toThrow(UnauthorizedError);
-      await expect(requireAuth()).rejects.toThrow("認証が必要です");
+      await expect(requireAuth()).rejects.toThrow(
+        ERROR_MESSAGES.AUTH.UNAUTHORIZED
+      );
     });
   });
 });

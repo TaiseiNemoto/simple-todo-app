@@ -1,4 +1,5 @@
 import { ErrorCode, type ErrorDetails } from "@/types/error";
+import { ERROR_MESSAGES } from "@/lib/constants/messages";
 
 /**
  * カスタムエラーの基底クラス
@@ -21,7 +22,10 @@ export class AppError extends Error {
  * 認証が必要な場合にスロー
  */
 export class UnauthorizedError extends AppError {
-  constructor(message = "認証が必要です", details?: ErrorDetails) {
+  constructor(
+    message = ERROR_MESSAGES.AUTH.UNAUTHORIZED,
+    details?: ErrorDetails
+  ) {
     super(message, ErrorCode.UNAUTHORIZED, 401, details);
   }
 }
@@ -31,10 +35,7 @@ export class UnauthorizedError extends AppError {
  * 権限がない場合にスロー
  */
 export class ForbiddenError extends AppError {
-  constructor(
-    message = "このリソースへのアクセス権限がありません",
-    details?: ErrorDetails
-  ) {
+  constructor(message = ERROR_MESSAGES.AUTH.FORBIDDEN, details?: ErrorDetails) {
     super(message, ErrorCode.FORBIDDEN, 403, details);
   }
 }
@@ -44,7 +45,7 @@ export class ForbiddenError extends AppError {
  * リソースが見つからない場合にスロー
  */
 export class NotFoundError extends AppError {
-  constructor(message = "リソースが見つかりません", details?: ErrorDetails) {
+  constructor(message = ERROR_MESSAGES.TODO.NOT_FOUND, details?: ErrorDetails) {
     super(message, ErrorCode.NOT_FOUND, 404, details);
   }
 }
@@ -54,7 +55,10 @@ export class NotFoundError extends AppError {
  * 入力値が不正な場合にスロー
  */
 export class ValidationError extends AppError {
-  constructor(message = "入力値が不正です", details?: ErrorDetails) {
+  constructor(
+    message = ERROR_MESSAGES.VALIDATION.INVALID_INPUT,
+    details?: ErrorDetails
+  ) {
     super(message, ErrorCode.INVALID_INPUT, 400, details);
   }
 }
@@ -64,7 +68,10 @@ export class ValidationError extends AppError {
  * クエリパラメータが不正な場合にスロー
  */
 export class InvalidParameterError extends AppError {
-  constructor(message = "クエリパラメータが不正です", details?: ErrorDetails) {
+  constructor(
+    message = ERROR_MESSAGES.VALIDATION.INVALID_PARAMETER,
+    details?: ErrorDetails
+  ) {
     super(message, ErrorCode.INVALID_PARAMETER, 400, details);
   }
 }
@@ -74,7 +81,10 @@ export class InvalidParameterError extends AppError {
  * リクエストボディが不正な場合にスロー
  */
 export class InvalidBodyError extends AppError {
-  constructor(message = "リクエストボディが不正です", details?: ErrorDetails) {
+  constructor(
+    message = ERROR_MESSAGES.VALIDATION.INVALID_BODY,
+    details?: ErrorDetails
+  ) {
     super(message, ErrorCode.INVALID_BODY, 400, details);
   }
 }
@@ -85,7 +95,7 @@ export class InvalidBodyError extends AppError {
  */
 export class InternalError extends AppError {
   constructor(
-    message = "サーバー内部エラーが発生しました",
+    message = ERROR_MESSAGES.SERVER.INTERNAL_ERROR,
     details?: ErrorDetails
   ) {
     super(message, ErrorCode.INTERNAL_ERROR, 500, details);
