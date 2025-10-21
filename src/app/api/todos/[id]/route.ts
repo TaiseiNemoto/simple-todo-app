@@ -9,9 +9,14 @@ import {
   invalidBodyError,
   internalError,
 } from "@/lib/errors";
-import { UnauthorizedError } from "@/lib/errors/custom-errors";
+import {
+  UnauthorizedError,
+  NotFoundError,
+  ForbiddenError,
+} from "@/lib/errors/custom-errors";
 import { ERROR_MESSAGES } from "@/lib/constants/messages";
 import { ZodError } from "zod";
+import { getTodoWithOwnershipCheck } from "@/lib/helpers/todo-helpers";
 
 /**
  * GET /api/todos/[id]
@@ -29,28 +34,24 @@ export async function GET(
     // paramsを解決
     const { id } = await params;
 
-    // Prisma findUnique
-    const todo = await prisma.todo.findUnique({
-      where: {
-        todoId: id,
-      },
-    });
-
-    // 存在チェック
-    if (!todo) {
-      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
-    }
-
-    // 所有者チェック
-    if (todo.userId !== userId) {
-      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
-    }
+    // TODO取得＋所有者チェック
+    const todo = await getTodoWithOwnershipCheck(id, userId);
 
     return NextResponse.json(todo);
   } catch (error) {
     // 認証エラー
     if (error instanceof UnauthorizedError) {
       return unauthorizedError(error.message);
+    }
+
+    // TODOが見つからない
+    if (error instanceof NotFoundError) {
+      return notFoundError(error.message);
+    }
+
+    // 所有者不一致
+    if (error instanceof ForbiddenError) {
+      return forbiddenError(error.message);
     }
 
     // その他のエラー
@@ -75,22 +76,8 @@ export async function PATCH(
     // paramsを解決
     const { id } = await params;
 
-    // Prisma findUnique（存在確認）
-    const todo = await prisma.todo.findUnique({
-      where: {
-        todoId: id,
-      },
-    });
-
-    // 存在チェック
-    if (!todo) {
-      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
-    }
-
-    // 所有者チェック
-    if (todo.userId !== userId) {
-      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
-    }
+    // TODO取得＋所有者チェック
+    await getTodoWithOwnershipCheck(id, userId);
 
     // リクエストボディ取得
     const body = await request.json();
@@ -111,6 +98,16 @@ export async function PATCH(
     // 認証エラー
     if (error instanceof UnauthorizedError) {
       return unauthorizedError(error.message);
+    }
+
+    // TODOが見つからない
+    if (error instanceof NotFoundError) {
+      return notFoundError(error.message);
+    }
+
+    // 所有者不一致
+    if (error instanceof ForbiddenError) {
+      return forbiddenError(error.message);
     }
 
     // バリデーションエラー
@@ -142,22 +139,8 @@ export async function DELETE(
     // paramsを解決
     const { id } = await params;
 
-    // Prisma findUnique（存在確認）
-    const todo = await prisma.todo.findUnique({
-      where: {
-        todoId: id,
-      },
-    });
-
-    // 存在チェック
-    if (!todo) {
-      return notFoundError(ERROR_MESSAGES.TODO.NOT_FOUND);
-    }
-
-    // 所有者チェック
-    if (todo.userId !== userId) {
-      return forbiddenError(ERROR_MESSAGES.TODO.FORBIDDEN);
-    }
+    // TODO取得＋所有者チェック
+    await getTodoWithOwnershipCheck(id, userId);
 
     // Prisma delete
     await prisma.todo.delete({
@@ -171,6 +154,16 @@ export async function DELETE(
     // 認証エラー
     if (error instanceof UnauthorizedError) {
       return unauthorizedError(error.message);
+    }
+
+    // TODOが見つからない
+    if (error instanceof NotFoundError) {
+      return notFoundError(error.message);
+    }
+
+    // 所有者不一致
+    if (error instanceof ForbiddenError) {
+      return forbiddenError(error.message);
     }
 
     // その他のエラー
