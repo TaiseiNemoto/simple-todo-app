@@ -7,6 +7,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { useTodos } from "./useTodos";
 import * as todosApi from "@/lib/api/todos";
 import type { Todo, Status } from "@/types/todo";
+import type { TodoQueryParams } from "@/lib/api/types";
 
 // APIモジュールをモック化
 vi.mock("@/lib/api/todos");
@@ -110,6 +111,74 @@ describe("useTodos", () => {
       });
 
       expect(todosApi.getTodos).toHaveBeenNthCalledWith(2, { status: "done" });
+    });
+
+    it("paramsオブジェクトの参照が変わっても、中身が同じなら再取得しない", async () => {
+      vi.mocked(todosApi.getTodos).mockResolvedValue(mockTodos);
+
+      const initialParams: TodoQueryParams = {
+        status: "open",
+        priority: "high",
+      };
+
+      const { result, rerender } = renderHook(
+        ({ params }: { params?: TodoQueryParams }) => useTodos(params),
+        {
+          initialProps: { params: initialParams },
+        }
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(todosApi.getTodos).toHaveBeenCalledTimes(1);
+
+      // 同じ値を持つ新しいオブジェクトを渡す
+      rerender({ params: { status: "open", priority: "high" } });
+
+      // 少し待ってから確認（不要な再取得が発生しないことを確認）
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // 再取得されないことを確認
+      expect(todosApi.getTodos).toHaveBeenCalledTimes(1);
+    });
+
+    it("params内の一部のプロパティのみ変更されたときは再取得する", async () => {
+      vi.mocked(todosApi.getTodos).mockResolvedValue(mockTodos);
+
+      const { result, rerender } = renderHook(
+        ({ params }: { params?: TodoQueryParams }) => useTodos(params),
+        {
+          initialProps: {
+            params: { status: "open", priority: "high" } as TodoQueryParams,
+          },
+        }
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(todosApi.getTodos).toHaveBeenCalledTimes(1);
+      expect(todosApi.getTodos).toHaveBeenCalledWith({
+        status: "open",
+        priority: "high",
+      });
+
+      // priorityのみ変更（statusは同じ）
+      rerender({
+        params: { status: "open", priority: "low" } as TodoQueryParams,
+      });
+
+      await waitFor(() => {
+        expect(todosApi.getTodos).toHaveBeenCalledTimes(2);
+      });
+
+      expect(todosApi.getTodos).toHaveBeenNthCalledWith(2, {
+        status: "open",
+        priority: "low",
+      });
     });
 
     it("refetch()を呼ぶと再取得する", async () => {

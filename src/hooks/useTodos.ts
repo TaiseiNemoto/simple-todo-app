@@ -72,7 +72,17 @@ export function useTodos(params?: TodoQueryParams): UseTodosResult {
     } finally {
       setIsLoading(false);
     }
-  }, [params]);
+    // paramsオブジェクトではなく、各プロパティを個別に依存配列に含める
+    // これにより、paramsオブジェクトの参照が変わっても、中身が同じなら再実行されない
+  }, [
+    params?.status,
+    params?.priority,
+    params?.dueFrom,
+    params?.dueTo,
+    params?.q,
+    params?.sortBy,
+    params?.sortOrder,
+  ]);
 
   /**
    * マウント時とparamsが変更されたときに自動取得
