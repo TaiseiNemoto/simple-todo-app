@@ -9,16 +9,23 @@ import TodoFilterBar from "@/components/todos/TodoFilterBar";
 import TodoItem from "@/components/todos/TodoItem";
 import DeleteConfirmDialog from "@/components/todos/DeleteConfirmDialog";
 import { useTodos } from "@/hooks/useTodos";
-import type { Todo, Priority, Status } from "@/types/todo";
+import { useModalState } from "@/hooks/useModalState";
+import type { Priority, Status } from "@/types/todo";
 import type { TodoQueryParams } from "@/lib/api/types";
 
 export default function TodosPage() {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
   const [priorityFilter, setPriorityFilter] = useState<"all" | Priority>("all");
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-  const [deletingTodo, setDeletingTodo] = useState<Todo | null>(null);
+
+  // モーダル状態管理
+  const {
+    modalState,
+    openCreateModal,
+    openEditModal,
+    openDeleteModal,
+    closeModal,
+  } = useModalState();
 
   // APIクエリパラメータを作成
   const queryParams = useMemo<TodoQueryParams | undefined>(() => {
@@ -58,17 +65,17 @@ export default function TodosPage() {
   };
 
   const handleEditSuccess = () => {
-    setEditingTodo(null);
+    closeModal();
     refetch();
   };
 
   const handleDeleteSuccess = () => {
-    setDeletingTodo(null);
+    closeModal();
     refetch();
   };
 
   const handleCreateSuccess = () => {
-    setShowCreateModal(false);
+    closeModal();
     refetch();
   };
 
@@ -84,7 +91,7 @@ export default function TodosPage() {
           onSearchChange={setSearchText}
           onStatusChange={setStatusFilter}
           onPriorityChange={setPriorityFilter}
-          onCreateClick={() => setShowCreateModal(true)}
+          onCreateClick={openCreateModal}
         />
 
         {/* ローディング状態 */}
@@ -123,8 +130,8 @@ export default function TodosPage() {
                 <TodoItem
                   key={todo.todoId}
                   todo={todo}
-                  onEdit={setEditingTodo}
-                  onDelete={setDeletingTodo}
+                  onEdit={openEditModal}
+                  onDelete={openDeleteModal}
                   onToggleSuccess={handleToggleSuccess}
                 />
               ))
@@ -134,26 +141,26 @@ export default function TodosPage() {
       </main>
 
       <CreateTodoModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
+        isOpen={modalState.type === "create"}
+        onClose={closeModal}
         onSuccess={handleCreateSuccess}
       />
 
-      {editingTodo && (
+      {modalState.type === "edit" && modalState.todo && (
         <EditTodoModal
-          isOpen={!!editingTodo}
-          todo={editingTodo}
-          onClose={() => setEditingTodo(null)}
+          isOpen={true}
+          todo={modalState.todo}
+          onClose={closeModal}
           onSuccess={handleEditSuccess}
         />
       )}
 
-      {deletingTodo && (
+      {modalState.type === "delete" && modalState.todo && (
         <DeleteConfirmDialog
-          isOpen={!!deletingTodo}
-          todoId={deletingTodo.todoId}
-          todoTitle={deletingTodo.title}
-          onClose={() => setDeletingTodo(null)}
+          isOpen={true}
+          todoId={modalState.todo.todoId}
+          todoTitle={modalState.todo.title}
+          onClose={closeModal}
           onSuccess={handleDeleteSuccess}
         />
       )}
