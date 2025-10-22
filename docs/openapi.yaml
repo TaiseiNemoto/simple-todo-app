@@ -1,0 +1,607 @@
+openapi: 3.0.3
+info:
+  title: Simple TODO App API
+  description: |
+    GitHub OAuth認証を使用したTODO管理アプリケーションのREST API仕様書。
+
+    ## 認証方式
+    すべてのエンドポイントはCookie-based Session認証（Auth.js）が必須です。
+
+    ## 技術スタック
+    - Next.js 15 (App Router)
+    - Auth.js v5 (GitHub OAuth)
+    - Prisma ORM (MySQL)
+    - Zod (バリデーション)
+  version: 1.0.0
+  contact:
+    name: GitHub Repository
+    url: https://github.com/your-repo/simple-todo-app
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: 開発環境
+
+tags:
+  - name: todos
+    description: TODO管理API
+
+paths:
+  /todos:
+    get:
+      tags:
+        - todos
+      summary: TODO一覧取得
+      description: |
+        認証ユーザーのTODO一覧を取得します。
+        フィルタリング、キーワード検索、ソートが可能です。
+      operationId: getTodos
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: ステータスでフィルタ
+          required: false
+          schema:
+            type: string
+            enum: [open, done]
+          example: open
+        - name: priority
+          in: query
+          description: 優先度でフィルタ
+          required: false
+          schema:
+            type: string
+            enum: [low, mid, high]
+          example: high
+        - name: dueFrom
+          in: query
+          description: |
+            期限の開始日（YYYY-MM-DD または ISO8601形式）
+            YYYY-MM-DD形式の場合、UTC 00:00:00に正規化されます
+          required: false
+          schema:
+            type: string
+            format: date
+          example: "2025-10-01"
+        - name: dueTo
+          in: query
+          description: |
+            期限の終了日（YYYY-MM-DD または ISO8601形式）
+            YYYY-MM-DD形式の場合、UTC 23:59:59.999に正規化されます
+          required: false
+          schema:
+            type: string
+            format: date
+          example: "2025-10-31"
+        - name: q
+          in: query
+          description: キーワード検索（タイトル・説明文を全文検索）
+          required: false
+          schema:
+            type: string
+          example: "買い物"
+        - name: sortBy
+          in: query
+          description: ソートキー
+          required: false
+          schema:
+            type: string
+            enum: [updatedAt, createdAt, due, priority]
+            default: updatedAt
+          example: due
+        - name: sortOrder
+          in: query
+          description: ソート順
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          example: asc
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+              examples:
+                todoList:
+                  summary: TODO一覧の例
+                  value:
+                    - todoId: "550e8400-e29b-41d4-a716-446655440000"
+                      userId: "123e4567-e89b-12d3-a456-426614174000"
+                      title: "プロジェクト資料を作成"
+                      description: "Q4の報告資料を作成する"
+                      status: "open"
+                      priority: "high"
+                      due: "2025-10-25T00:00:00.000Z"
+                      createdAt: "2025-10-22T09:00:00.000Z"
+                      updatedAt: "2025-10-22T09:30:00.000Z"
+                    - todoId: "660e8400-e29b-41d4-a716-446655440001"
+                      userId: "123e4567-e89b-12d3-a456-426614174000"
+                      title: "コードレビュー"
+                      description: ""
+                      status: "open"
+                      priority: "high"
+                      due: "2025-10-24T00:00:00.000Z"
+                      createdAt: "2025-10-21T14:00:00.000Z"
+                      updatedAt: "2025-10-21T14:00:00.000Z"
+        "400":
+          description: クエリパラメータのバリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalidParameter:
+                  summary: 無効なステータス値
+                  value:
+                    code: "INVALID_PARAMETER"
+                    message: "無効なクエリパラメータです"
+                    details:
+                      - code: "invalid_enum_value"
+                        options: ["open", "done"]
+                        path: ["status"]
+                        message: "Invalid enum value. Expected 'open' | 'done', received 'completed'"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      tags:
+        - todos
+      summary: TODO新規作成
+      description: 新しいTODOを作成します。
+      operationId: createTodo
+      security:
+        - cookieAuth: []
+      requestBody:
+        description: 作成するTODOの情報
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTodoRequest"
+            examples:
+              createTodo:
+                summary: TODO作成の例
+                value:
+                  title: "ドキュメントを更新"
+                  description: "API仕様書を最新版に更新する"
+                  status: "open"
+                  priority: "high"
+                  due: "2025-10-30"
+      responses:
+        "201":
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+              examples:
+                createdTodo:
+                  summary: 作成されたTODO
+                  value:
+                    todoId: "770e8400-e29b-41d4-a716-446655440002"
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    title: "ドキュメントを更新"
+                    description: "API仕様書を最新版に更新する"
+                    status: "open"
+                    priority: "high"
+                    due: "2025-10-30T00:00:00.000Z"
+                    createdAt: "2025-10-22T11:00:00.000Z"
+                    updatedAt: "2025-10-22T11:00:00.000Z"
+        "400":
+          description: リクエストボディのバリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalidBody:
+                  summary: タイトル未入力
+                  value:
+                    code: "INVALID_BODY"
+                    message: "無効なリクエストボディです"
+                    details:
+                      - code: "too_small"
+                        minimum: 1
+                        type: "string"
+                        inclusive: true
+                        exact: false
+                        message: "タイトルは必須です"
+                        path: ["title"]
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /todos/{id}:
+    get:
+      tags:
+        - todos
+      summary: TODO単体取得
+      description: 指定したIDのTODOを取得します。
+      operationId: getTodoById
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: TODO ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+              examples:
+                todo:
+                  summary: TODOの例
+                  value:
+                    todoId: "550e8400-e29b-41d4-a716-446655440000"
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    title: "プロジェクト資料を作成"
+                    description: "Q4の報告資料を作成する"
+                    status: "open"
+                    priority: "high"
+                    due: "2025-10-25T00:00:00.000Z"
+                    createdAt: "2025-10-22T09:00:00.000Z"
+                    updatedAt: "2025-10-22T09:30:00.000Z"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      tags:
+        - todos
+      summary: TODO更新
+      description: |
+        指定したIDのTODOを更新します。
+        リクエストボディに含めたフィールドのみが更新されます。
+      operationId: updateTodo
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: TODO ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        description: 更新するTODOの情報（部分更新）
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTodoRequest"
+            examples:
+              updateStatus:
+                summary: ステータスと優先度を更新
+                value:
+                  status: "done"
+                  priority: "mid"
+              removeDue:
+                summary: 期限を削除
+                value:
+                  due: null
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+              examples:
+                updatedTodo:
+                  summary: 更新されたTODO
+                  value:
+                    todoId: "550e8400-e29b-41d4-a716-446655440000"
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    title: "プロジェクト資料を作成"
+                    description: "Q4の報告資料を作成する"
+                    status: "done"
+                    priority: "mid"
+                    due: "2025-10-25T00:00:00.000Z"
+                    createdAt: "2025-10-22T09:00:00.000Z"
+                    updatedAt: "2025-10-22T12:00:00.000Z"
+        "400":
+          description: リクエストボディのバリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                invalidBody:
+                  summary: タイトルが長すぎる
+                  value:
+                    code: "INVALID_BODY"
+                    message: "無効なリクエストボディです"
+                    details:
+                      - code: "too_big"
+                        maximum: 120
+                        type: "string"
+                        inclusive: true
+                        exact: false
+                        message: "タイトルは120文字以内で入力してください"
+                        path: ["title"]
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags:
+        - todos
+      summary: TODO削除
+      description: |
+        指定したIDのTODOを削除します。
+        削除成功時、削除されたTODOオブジェクトを返します。
+      operationId: deleteTodo
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: TODO ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        "200":
+          description: 削除成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+              examples:
+                deletedTodo:
+                  summary: 削除されたTODO
+                  value:
+                    todoId: "550e8400-e29b-41d4-a716-446655440000"
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    title: "プロジェクト資料を作成"
+                    description: "Q4の報告資料を作成する"
+                    status: "done"
+                    priority: "mid"
+                    due: "2025-10-25T00:00:00.000Z"
+                    createdAt: "2025-10-22T09:00:00.000Z"
+                    updatedAt: "2025-10-22T12:00:00.000Z"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: next-auth.session-token
+      description: |
+        Auth.jsによるセッション認証（GitHub OAuth）
+        Cookieは自動的に送信されます。
+
+  schemas:
+    Todo:
+      type: object
+      description: TODOオブジェクト
+      required:
+        - todoId
+        - userId
+        - title
+        - description
+        - status
+        - priority
+        - createdAt
+        - updatedAt
+      properties:
+        todoId:
+          type: string
+          format: uuid
+          description: TODO ID（UUID、主キー）
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        userId:
+          type: string
+          format: uuid
+          description: ユーザーID（UUID、外部キー）
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: タイトル
+          example: "買い物リスト作成"
+        description:
+          type: string
+          maxLength: 2000
+          description: 説明文
+          example: "週末の買い物リストを作成する"
+        status:
+          type: string
+          enum: [open, done]
+          description: ステータス
+          example: "open"
+        priority:
+          type: string
+          enum: [low, mid, high]
+          description: 優先度
+          example: "mid"
+        due:
+          type: string
+          format: date-time
+          nullable: true
+          description: 期限（ISO8601形式、UTC）
+          example: "2025-10-26T00:00:00.000Z"
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時（ISO8601形式、UTC）
+          example: "2025-10-22T10:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日時（ISO8601形式、UTC）
+          example: "2025-10-22T10:00:00.000Z"
+
+    CreateTodoRequest:
+      type: object
+      description: TODO作成リクエスト
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: タイトル（必須、1〜120文字）
+          example: "ドキュメントを更新"
+        description:
+          type: string
+          maxLength: 2000
+          description: "説明文（任意、デフォルト: 空文字）"
+          default: ""
+          example: "API仕様書を最新版に更新する"
+        status:
+          type: string
+          enum: [open, done]
+          description: "ステータス（任意、デフォルト: open）"
+          default: "open"
+          example: "open"
+        priority:
+          type: string
+          enum: [low, mid, high]
+          description: "優先度（任意、デフォルト: mid）"
+          default: "mid"
+          example: "high"
+        due:
+          type: string
+          format: date
+          description: |
+            期限（任意、YYYY-MM-DD または ISO8601形式）
+            YYYY-MM-DD形式の場合、UTC 00:00:00に正規化されます
+          example: "2025-10-30"
+
+    UpdateTodoRequest:
+      type: object
+      description: TODO更新リクエスト（すべてのフィールドが任意）
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: タイトル（1〜120文字）
+          example: "ドキュメント更新完了"
+        description:
+          type: string
+          maxLength: 2000
+          description: 説明文
+          example: "API仕様書の更新が完了しました"
+        status:
+          type: string
+          enum: [open, done]
+          description: ステータス
+          example: "done"
+        priority:
+          type: string
+          enum: [low, mid, high]
+          description: 優先度
+          example: "mid"
+        due:
+          type: string
+          format: date
+          nullable: true
+          description: |
+            期限（YYYY-MM-DD または ISO8601形式、nullで削除）
+            YYYY-MM-DD形式の場合、UTC 00:00:00に正規化されます
+          example: "2025-11-15"
+
+    Error:
+      type: object
+      description: エラーレスポンス
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: エラーコード
+          enum:
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - INVALID_PARAMETER
+            - INVALID_BODY
+            - INVALID_INPUT
+            - INTERNAL_ERROR
+          example: "INVALID_BODY"
+        message:
+          type: string
+          description: エラーメッセージ（日本語）
+          example: "無効なリクエストボディです"
+        details:
+          type: array
+          description: 詳細情報（バリデーションエラー時など）
+          items:
+            type: object
+            additionalProperties: true
+          example:
+            - code: "too_small"
+              minimum: 1
+              type: "string"
+              inclusive: true
+              exact: false
+              message: "タイトルは必須です"
+              path: ["title"]
+
+  responses:
+    Unauthorized:
+      description: 認証エラー（未認証）
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "UNAUTHORIZED"
+            message: "認証が必要です"
+
+    Forbidden:
+      description: 認可エラー（所有者不一致）
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "FORBIDDEN"
+            message: "このTODOにアクセスする権限がありません"
+
+    NotFound:
+      description: リソースが見つからない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: "NOT_FOUND"
+            message: "TODOが見つかりません"
