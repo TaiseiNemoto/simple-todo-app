@@ -6,7 +6,7 @@ import {
   withQueryValidation,
   withBodyValidation,
 } from "@/lib/api/route-handler";
-import { Prisma } from "@prisma/client";
+import { buildTodoSearchQuery } from "@/lib/helpers/query-builder";
 
 /**
  * GET /api/todos
@@ -33,43 +33,7 @@ export const GET = withQueryValidation(async (request: NextRequest) => {
   const validatedParams = todoQuerySchema.parse(queryParams);
 
   // Prisma検索クエリ構築
-  const where: Prisma.TodoWhereInput = {
-    userId,
-  };
-
-  // ステータスフィルタ
-  if (validatedParams.status) {
-    where.status = validatedParams.status;
-  }
-
-  // 優先度フィルタ
-  if (validatedParams.priority) {
-    where.priority = validatedParams.priority;
-  }
-
-  // 期限範囲フィルタ
-  if (validatedParams.dueFrom || validatedParams.dueTo) {
-    where.due = {};
-    if (validatedParams.dueFrom) {
-      where.due.gte = validatedParams.dueFrom;
-    }
-    if (validatedParams.dueTo) {
-      where.due.lte = validatedParams.dueTo;
-    }
-  }
-
-  // キーワード検索（title/descriptionの部分一致）
-  if (validatedParams.q) {
-    where.OR = [
-      { title: { contains: validatedParams.q } },
-      { description: { contains: validatedParams.q } },
-    ];
-  }
-
-  // ソート設定
-  const orderBy: Prisma.TodoOrderByWithRelationInput = {
-    [validatedParams.sortBy]: validatedParams.sortOrder,
-  };
+  const { where, orderBy } = buildTodoSearchQuery(userId, validatedParams);
 
   // Prismaクエリ実行
   const todos = await prisma.todo.findMany({
