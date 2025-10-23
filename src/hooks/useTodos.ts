@@ -55,6 +55,10 @@ export function useTodos(params?: TodoQueryParams): UseTodosResult {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // paramsから個別プロパティを展開（参照の変更を無視し、値の変更のみ検知するため）
+  const { status, priority, dueFrom, dueTo, q, sortBy, sortOrder } =
+    params || {};
+
   /**
    * TODO一覧を取得する関数
    */
@@ -62,7 +66,15 @@ export function useTodos(params?: TodoQueryParams): UseTodosResult {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getTodos(params);
+      const data = await getTodos({
+        status,
+        priority,
+        dueFrom,
+        dueTo,
+        q,
+        sortBy,
+        sortOrder,
+      });
       setTodos(data);
     } catch (err) {
       const errorMessage =
@@ -72,17 +84,7 @@ export function useTodos(params?: TodoQueryParams): UseTodosResult {
     } finally {
       setIsLoading(false);
     }
-    // paramsオブジェクトではなく、各プロパティを個別に依存配列に含める
-    // これにより、paramsオブジェクトの参照が変わっても、中身が同じなら再実行されない
-  }, [
-    params?.status,
-    params?.priority,
-    params?.dueFrom,
-    params?.dueTo,
-    params?.q,
-    params?.sortBy,
-    params?.sortOrder,
-  ]);
+  }, [status, priority, dueFrom, dueTo, q, sortBy, sortOrder]);
 
   /**
    * マウント時とparamsが変更されたときに自動取得
