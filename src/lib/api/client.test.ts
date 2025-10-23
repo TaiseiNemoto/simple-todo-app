@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { apiClient, ApiError, handleApiError } from "./client";
+import { apiClient, ApiError } from "./client";
 
 describe("apiClient", () => {
   // fetchのモック
@@ -368,51 +368,5 @@ describe("apiClient", () => {
         }
       });
     });
-  });
-});
-
-describe("handleApiError", () => {
-  it("401エラーの場合、認証メッセージを返す", () => {
-    const error = new ApiError(401, "UNAUTHORIZED", "認証が必要です");
-    expect(handleApiError(error)).toBe(
-      "認証が必要です。サインインしてください。"
-    );
-  });
-
-  it("403エラーの場合、権限メッセージを返す", () => {
-    const error = new ApiError(403, "FORBIDDEN", "権限がありません");
-    expect(handleApiError(error)).toBe("この操作を実行する権限がありません。");
-  });
-
-  it("404エラーの場合、Not Foundメッセージを返す", () => {
-    const error = new ApiError(404, "NOT_FOUND", "見つかりません");
-    expect(handleApiError(error)).toBe("指定されたリソースが見つかりません。");
-  });
-
-  it("500エラーの場合、サーバーエラーメッセージを返す", () => {
-    const error = new ApiError(500, "INTERNAL_ERROR", "サーバーエラー");
-    expect(handleApiError(error)).toBe(
-      "サーバーエラーが発生しました。しばらくしてから再度お試しください。"
-    );
-  });
-
-  it("その他のHTTPエラーの場合、エラーメッセージをそのまま返す", () => {
-    const error = new ApiError(
-      400,
-      "INVALID_BODY",
-      "リクエストボディが不正です"
-    );
-    expect(handleApiError(error)).toBe("リクエストボディが不正です");
-  });
-
-  it("ApiError以外のエラーの場合、汎用メッセージを返す", () => {
-    const error = new Error("何か問題が発生しました");
-    expect(handleApiError(error)).toBe("予期しないエラーが発生しました。");
-  });
-
-  it("不明なエラーの場合、汎用メッセージを返す", () => {
-    expect(handleApiError("string error")).toBe(
-      "予期しないエラーが発生しました。"
-    );
   });
 });
